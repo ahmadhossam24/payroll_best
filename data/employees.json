@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Ahmed",
+        "fixed_salary": 7000,
+        "target": 100000,
+        "point_value": 20
+    },
+    {
+        "id": 2,
+        "name": "Ali",
+        "fixed_salary": 7000,
+        "target": 120000,
+        "point_value": 20
+    }
+]
