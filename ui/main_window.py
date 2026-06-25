@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
     QFileDialog
 )
 from payroll.attendance import analyze_attendance
+from ui.attendance_review import AttendanceReviewDialog
 
 class MainWindow(QWidget):
 
@@ -44,7 +45,17 @@ class MainWindow(QWidget):
         self.setLayout(layout)
 
     def analyze_attendance_method(self):
-        print(analyze_attendance(self.file_path))
+        # print(analyze_attendance(self.file_path))
+        attendance_data = analyze_attendance(
+            self.file_path
+        )
+
+        dialog = AttendanceReviewDialog(
+            attendance_data,
+            self
+        )
+
+        dialog.exec()
 
     def select_file(self):
 
