@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 import pandas as pd
 from collections import defaultdict
 from datetime import datetime, timedelta
+import json
 
 WORK_START_HOUR = 8
 WORK_START_MINUTE = 40
@@ -327,13 +328,21 @@ def load_fingerprints(excel_file):
 
     records = []
 
-    for _, row in df.iterrows():
+    # Load employee mapping 
+    with open("data/employee_mapping.json", "r") as f:
+        employee_mapping = json.load(f)
 
-        records.append({
-            "name": str(row.iloc[2]).strip(),      # column C
-            "datetime": parse_datetime(row.iloc[3]),              # column D
-            "action": str(row.iloc[4]).strip()    # column E
-        })
+    for _, row in df.iterrows():
+        name = str(row.iloc[2]).strip()   # column C
+
+        # Only proceed if name exists in mapping keys
+        if name.lower() in employee_mapping.keys():
+
+            records.append({
+                "name": str(row.iloc[2]).strip(),      # column C
+                "datetime": parse_datetime(row.iloc[3]),              # column D
+                "action": str(row.iloc[4]).strip()    # column E
+            })
 
     return records
 

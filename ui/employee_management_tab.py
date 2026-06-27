@@ -15,7 +15,7 @@ class EmployeeManagementTab(QWidget):
     """
 
     # Path to the shared JSON file
-    MAPPING_FILE = "employee_mapping.json"
+    MAPPING_FILE = "data/employee_mapping.json"
 
     def __init__(self):
         super().__init__()
