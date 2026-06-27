@@ -1,3 +1,4 @@
+from data.globals import attendance_result_dict
 from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -83,10 +84,12 @@ class AttendanceReviewDialog(QDialog):
 
     def get_review_data(self):
         converted_data = self.get_converted_review_widgets()
-        print(converted_data) 
+        attendance_result_dict.update(converted_data)
         self.accept()
 
     def build_employee_tab(self, employee_name, summary):
+
+        self.review_widgets[f"{employee_name}"]={"absences": [],"permissions": [],"latencies":[],"early_leaves":[],"need_reviews":[]}
 
         container = QWidget()
         layout = QVBoxLayout(container)

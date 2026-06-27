@@ -12,3 +12,7 @@ after save now we should have list of deductions with value and data , notes
 
 {"user":{absences,early_leaves,permissions,need_reviews,latencies,fixed_salary,target_bonus,zero_acceptS_deduction,target,achieved,manually_addons,manually_deductions,final_salary}}
 شاشة الموائمة - تظبيط الاوبجكت الناتج في شاشة مراجعة الحضور وضبط اللوجيك بحيث لا يستحضر الا الموظفين المسجلين بالبرنامج- شاشة المرتب والتارجت والزيرو اكسبت - شاشة اضافة الزيادة والخصم العام - شاشة المراجعه النهائية
+
+قبل تنفيذ الشاشة 2 
+حل مشكلة انه الاوبجكت الناتج عن شاشة الحضور لا يتضمن الموظف اذا كان لا يوجد اي مشاكل في بصماته
+تسجيل الاوبجكت ده في ميموري اوبجكت 
