@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QTabWidget          
 )
 from payroll.attendance import analyze_attendance
+from payroll.populate_with_payrol import update_data_dict_with_payroll
 from ui.attendance_review import AttendanceReviewDialog
 from ui.employee_management_tab import EmployeeManagementTab
 from data.globals import attendance_result_dict
@@ -68,9 +69,10 @@ class MainWindow(QWidget):
         if dialog.exec():
             dialog = ManualAddDedDialog(self)
             if dialog.exec():
-
+                update_data_dict_with_payroll(self.target_file)
                 print(attendance_result_dict)
 
+        
     def select_attendance_file(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
