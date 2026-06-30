@@ -69,6 +69,7 @@ class MainWindow(QWidget):
         if dialog.exec():
             dialog = ManualAddDedDialog(self)
             if dialog.exec():
+                print(attendance_result_dict)
                 update_data_dict_with_payroll(self.target_file)
                 print(attendance_result_dict)
 
