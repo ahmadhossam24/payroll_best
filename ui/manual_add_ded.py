@@ -325,6 +325,7 @@ class ManualAddDedDialog(QDialog):
             employee["manually_deductions"] = []
             employee["fixed_salary"] = 3000
             employee["target_bonus"] = 0
+            employee["target_bonus_explain"] = ""
             employee["zero_accepts_deductions"] = 0
             employee["target"] = 0
             employee["achieved"] = 0
