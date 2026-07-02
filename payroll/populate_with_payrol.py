@@ -153,8 +153,8 @@ def update_data_dict_with_payroll(target_file):
                         target_bonus = 2000 * 0.6  # 1200
                         explain = f"Achieved {perc:.1f}% of target (60%–<80%) → 2000 × 0.6 = {target_bonus:.0f}"
                     elif 80 <= perc < 100:
-                        target_bonus = 2000 * 0.6  # 1200 (same as previous per spec)
-                        explain = f"Achieved {perc:.1f}% of target (80%–<100%) → 2000 × 0.6 = {target_bonus:.0f}"
+                        target_bonus = 2000 * 0.8  # 1200 (same as previous per spec)
+                        explain = f"Achieved {perc:.1f}% of target (80%–<100%) → 2000 × 0.8 = {target_bonus:.0f}"
                     else:  # >= 100%
                         target_bonus = 2000 * (perc / 100)
                         explain = f"Achieved {perc:.1f}% of target (>=100%) → 2000 × {perc/100:.2f} = {target_bonus:.0f}"

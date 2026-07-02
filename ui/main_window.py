@@ -12,6 +12,7 @@ from payroll.populate_with_payrol import update_data_dict_with_payroll
 from ui.attendance_review import AttendanceReviewDialog
 from ui.employee_management_tab import EmployeeManagementTab
 from data.globals import attendance_result_dict
+from ui.final_review import FinalDialog
 from ui.manual_add_ded import ManualAddDedDialog
 
 class MainWindow(QWidget):
@@ -71,6 +72,8 @@ class MainWindow(QWidget):
             if dialog.exec():
                 update_data_dict_with_payroll(self.target_file)
                 print(attendance_result_dict)
+                dialog = FinalDialog(self)
+                dialog.exec()
 
         
     def select_attendance_file(self):

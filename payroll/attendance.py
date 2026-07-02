@@ -334,16 +334,14 @@ def load_fingerprints(excel_file):
 
     for _, row in df.iterrows():
         name = str(row.iloc[2]).strip()   # column C
-
         # Only proceed if name exists in mapping keys
-        if name.lower() in employee_mapping.keys():
-
+        if name in employee_mapping.keys():
             records.append({
                 "name": str(row.iloc[2]).strip(),      # column C
                 "datetime": parse_datetime(row.iloc[3]),              # column D
                 "action": str(row.iloc[4]).strip()    # column E
             })
-
+    print(records)
     return records
 
 @dataclass
