@@ -3,6 +3,7 @@ import pandas as pd
 from collections import defaultdict
 from datetime import datetime, timedelta
 import json
+import calendar
 
 WORK_START_HOUR = 8
 WORK_START_MINUTE = 40
@@ -315,7 +316,7 @@ def group_records(records):
 
     for record in records:
 
-        employee = record["name"]
+        employee = record["name"].lower()
 
         date_str = record["datetime"].date().isoformat()
 
@@ -333,7 +334,7 @@ def load_fingerprints(excel_file):
         employee_mapping = json.load(f)
 
     for _, row in df.iterrows():
-        name = str(row.iloc[2]).strip()   # column C
+        name = str(row.iloc[2]).strip().lower()   # column C
         # Only proceed if name exists in mapping keys
         if name in employee_mapping.keys():
             records.append({

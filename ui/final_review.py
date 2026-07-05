@@ -44,10 +44,12 @@ from PySide6.QtWidgets import (
     QTabWidget,
     QVBoxLayout,
     QWidget,
+    QFileDialog
 )
 
 from data.globals import attendance_result_dict
-
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
 
 # ---------------------------------------------------------------------------
 # Category configuration
@@ -110,6 +112,16 @@ def _to_number(value) -> float:
         return int(text)
     except (ValueError, TypeError):
         return 0
+    
+def _is_empty(value) -> bool:
+    """True for values that should be omitted from generated note text."""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() == ""
+    if isinstance(value, (int, float)):
+        return value == 0
+    return False
 
 def _fmt(value):
     """Human readable representation for read-only cells."""
@@ -167,10 +179,9 @@ def compute_employee_metrics(emp: dict) -> dict:
         + (emp.get("zero_accepts_deductions", 0) or 0)
     )
 
-    quality = 1000 - (points_minus - points_plus * 100)
-    if quality < 0:
-        quality = 0
-    elif quality > 1000:
+    quality = 1000 - ((points_minus - points_plus) * 100)
+
+    if quality > 1000:
         quality=1000
 
     fixed_salary = emp.get("fixed_salary", 3000) or 0
@@ -187,7 +198,166 @@ def compute_employee_metrics(emp: dict) -> dict:
         "final": final,
     }
 
+# ---------------------------------------------------------------------------
+# Notes text generation (for the Excel export)
+# ---------------------------------------------------------------------------
 
+def _deduction_suffix(deduction_points, spin_deduction, notes_edit) -> str:
+    """
+    Builds the "خصم X نقاط وY من الاساسي <notes_edit>" tail shared by
+    absences / permissions / latencies / early_leaves / need_reviews.
+    Any part that is 0 / "" / None is skipped entirely.
+    """
+    dp_empty = _is_empty(deduction_points)
+    sd_empty = _is_empty(spin_deduction)
+
+    parts = []
+    if not dp_empty and not sd_empty:
+        parts.append(f"خصم {deduction_points} نقاط و{spin_deduction} من الاساسي")
+    elif not dp_empty:
+        parts.append(f"خصم {deduction_points} نقاط")
+    elif not sd_empty:
+        parts.append(f"خصم {spin_deduction} من الاساسي")
+
+    if not _is_empty(notes_edit):
+        parts.append(str(notes_edit))
+
+    return " ".join(parts)
+
+
+def _note_for_absence(entry: dict) -> str:
+    date = entry.get("absence", {}).get("date", "")
+    base = f"غياب يوم {date}" if not _is_empty(date) else "غياب"
+    suffix = _deduction_suffix(
+        entry.get("deduction_points"), entry.get("spin_deduction"), entry.get("notes_edit")
+    )
+    return " ".join(p for p in (base, suffix) if p)
+
+
+def _note_for_permission(entry: dict) -> str:
+    nested = entry.get("permission", {})
+    start, end = nested.get("start"), nested.get("end")
+    duration = nested.get("duration_minutes")
+
+    base = ""
+    if not _is_empty(duration):
+        base = f"اذن لمدة {duration} دقيقة"
+        if not _is_empty(start) and not _is_empty(end):
+            base += f" من {_fmt(start)} الى {_fmt(end)}"
+
+    suffix = _deduction_suffix(
+        entry.get("deduction_points"), entry.get("spin_deduction"), entry.get("notes_edit")
+    )
+    return " ".join(p for p in (base, suffix) if p)
+
+
+def _note_for_latency(entry: dict) -> str:
+    nested = entry.get("latency", {})
+    minutes, date = nested.get("minutes"), nested.get("date")
+
+    base = ""
+    if not _is_empty(minutes):
+        base = f"تأخير لمدة {minutes} دقيقة"
+        if not _is_empty(date):
+            base += f" يوم {date}"
+
+    suffix = _deduction_suffix(
+        entry.get("deduction_points"), entry.get("spin_deduction"), entry.get("notes_edit")
+    )
+    return " ".join(p for p in (base, suffix) if p)
+
+
+def _note_for_early_leave(entry: dict) -> str:
+    nested = entry.get("early_leave", {})
+    minutes, date = nested.get("minutes"), nested.get("date")
+
+    base = ""
+    if not _is_empty(minutes):
+        base = f"مغادرة مبكرة {minutes} دقيقة"
+        if not _is_empty(date):
+            base += f" يوم {date}"
+
+    suffix = _deduction_suffix(
+        entry.get("deduction_points"), entry.get("spin_deduction"), entry.get("notes_edit")
+    )
+    return " ".join(p for p in (base, suffix) if p)
+
+
+def _note_for_need_review(entry: dict) -> str:
+    nested = entry.get("need_review", {})
+    date, reason = nested.get("date"), nested.get("reason")
+
+    base = ""
+    if not _is_empty(date):
+        base = f"مراجعة يوم {date}"
+    if not _is_empty(reason):
+        base = f"{base} السبب {reason}" if base else f"مراجعة - السبب {reason}"
+
+    suffix = _deduction_suffix(
+        entry.get("deduction_points"), entry.get("spin_deduction"), entry.get("notes_edit")
+    )
+    return " ".join(p for p in (base, suffix) if p)
+
+
+def _note_for_manual_addition(entry: dict) -> str:
+    value, note = entry.get("value"), entry.get("note")
+    parts = []
+    if not _is_empty(value):
+        parts.append(f"اضافة {value}")
+    if not _is_empty(note):
+        parts.append(f"السبب {note}")
+    return " ".join(parts)
+
+
+def _note_for_manual_deduction(entry: dict) -> str:
+    value, points, note = entry.get("value"), entry.get("points"), entry.get("note")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+
+    parts = []
+    if not v_empty and not p_empty:
+        parts.append(f"خصم {value} و{points} نقطة")
+    elif not v_empty:
+        parts.append(f"خصم {value}")
+    elif not p_empty:
+        parts.append(f"خصم {points} نقطة")
+
+    if not _is_empty(note):
+        parts.append(f"السبب {note}")
+
+    return " ".join(parts)
+
+
+_NOTE_BUILDERS = {
+    "absences": _note_for_absence,
+    "permissions": _note_for_permission,
+    "latencies": _note_for_latency,
+    "early_leaves": _note_for_early_leave,
+    "need_reviews": _note_for_need_review,
+    "manually_additions": _note_for_manual_addition,
+    "manually_deductions": _note_for_manual_deduction,
+}
+
+
+def build_employee_notes(emp: dict) -> str:
+    """
+    Concatenates one readable Arabic line per record (absences, permissions,
+    latencies, early_leaves, need_reviews, manual additions/deductions),
+    skipping any sub-part whose value is 0 / "" / None, plus the
+    target_bonus_explain line if present.
+    """
+    lines = []
+
+    for cat_key, builder in _NOTE_BUILDERS.items():
+        for entry in emp.get(cat_key, []):
+            line = builder(entry)
+            if line:
+                lines.append(line)
+
+    explain = emp.get("target_bonus_explain")
+    if not _is_empty(explain):
+        lines.append(str(explain))
+
+    return "\n".join(lines)
 # ---------------------------------------------------------------------------
 # Details popup
 # ---------------------------------------------------------------------------
@@ -508,8 +678,83 @@ class FinalDialog(QDialog):
         pass
 
     def export_excel(self):
-        """TODO: implement Excel export."""
-        pass
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export to Excel", "payroll.xlsx", "Excel Files (*.xlsx)"
+        )
+        if not path:
+            return
+
+        headers = [
+            "Employee Name",
+            "Main",
+            "Main After Deductions/Additions",
+            "Quality",
+            "Quality After Deductions/Additions",
+            "Target",
+            "Achieved",
+            "Target Bonus",
+            "Final Salary",
+            "Notes",
+        ]
+
+        wb = Workbook()
+        sheet = wb.active
+        sheet.title = "Payroll"
+
+        header_font = Font(name="Arial", bold=True)
+        cell_font = Font(name="Arial")
+        wrap_align = Alignment(wrap_text=True, vertical="top")
+
+        sheet.append(headers)
+        for cell in sheet[1]:
+            cell.font = header_font
+
+        for emp_name, emp_data in attendance_result_dict.items():
+            metrics = compute_employee_metrics(emp_data)
+
+            main = 3000
+            main_after = main + metrics["main_plus"] - metrics["main_minus"]
+
+            quality_base = 1000
+            quality_after = quality_base + metrics["points_plus"] - metrics["points_minus"]
+
+            target = emp_data.get("target", 0)
+            achieved = emp_data.get("achieved", 0)
+            target_bonus = emp_data.get("target_bonus", 0)
+            final_salary = metrics["final"]
+
+            notes = build_employee_notes(emp_data)
+
+            row = [
+                emp_name,
+                main,
+                main_after,
+                quality_base,
+                quality_after,
+                target,
+                achieved,
+                target_bonus,
+                final_salary,
+                notes,
+            ]
+            sheet.append(row)
+
+            note_cell = sheet.cell(row=sheet.max_row, column=len(headers))
+            note_cell.alignment = wrap_align
+            for col in range(1, len(headers) + 1):
+                sheet.cell(row=sheet.max_row, column=col).font = cell_font
+
+        widths = [22, 10, 26, 10, 28, 10, 10, 14, 14, 60]
+        for col_idx, width in enumerate(widths, start=1):
+            sheet.column_dimensions[chr(64 + col_idx)].width = width
+
+        try:
+            wb.save(path)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Export Failed", f"Could not save file:\n{exc}")
+            return
+
+        QMessageBox.information(self, "Export Complete", f"Excel file saved to:\n{path}")
 
     def save_data(self):
         """TODO: implement persistence of attendance_result_dict."""

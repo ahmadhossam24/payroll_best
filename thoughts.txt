@@ -5,7 +5,11 @@ also same for permissions
 the need to review things can be removed or confirmed if confirmed the deduction value must be added
 every item should have notes beside
 after save now we should have list of deductions with value and data , notes
-
+لازم تعرف الشغل بدا من امتى للموظف 
+لو الموظف جديد اول شهر مش بياخد كوميشن ملهوش تارجت ومش بيتخصم منه زيرو اكسيبت
+عدد ايام العمل \ 30 * 1000 لحساب الكواليتي
+عدد ايام العمل \ 30 * 3000 لحساب الاساسي
+الاكسبورتس والسيف داتا وريندر الدتا في الويدجت الاخيرة مباشرة 
 انتبه لو الموظف غاب اخر يوم او يومين في الشهر مش هيتحسبله غياب عشان البرنامج بيعتمد على تقرير الحضور والانصراف فقط
 
 {"user":{absences,early_leaves,permissions,need_reviews,latencies,fixed_salary,target_bonus,zero_acceptS_deduction,target,achieved,manually_additions,manually_deductions,points_deductions,final_salary}}

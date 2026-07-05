@@ -109,7 +109,13 @@ class EmployeeManagementTab(QWidget):
             self.mapping = {}
 
     def save_data(self):
-        """Write the current mapping to the JSON file."""
+        """Write the current mapping to the JSON file, converting all keys and values to lowercase."""
+        # Convert all keys and values to lowercase
+        lower_mapping = {k.lower(): v.lower() for k, v in self.mapping.items()}
+        
+        # Update the in-memory mapping to reflect the lowercased version
+        self.mapping = lower_mapping
+
         try:
             with open(self.MAPPING_FILE, "w", encoding="utf-8") as f:
                 json.dump(self.mapping, f, indent=4, ensure_ascii=False)
