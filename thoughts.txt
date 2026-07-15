@@ -1,3 +1,4 @@
+اعمله بكره: روح غير اي حاجه محتاجه تتغير بعد تغيير ال employee_mapping obj structure
 what appears from printing analyze_attendance 
 should be listed in ui 
 for absences user can confirm allowed not allowed value is default but can be changed

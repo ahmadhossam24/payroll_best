@@ -1,20 +1,82 @@
 {
-    "nor ahmed": "nour ahmed",
-    "bsantmohammed": "bsaant mohamed",
-    "basant": "basant tharwat",
-    "hayamayman": "hayam",
-    "lobna": "lobna",
-    "asmaamagdy": "asmaa",
-    "ayaahmed": "aya ahmed",
-    "mennaahmed": "menna",
-    "shahd": "shahd",
-    "walaamaged": "walaa",
-    "dinamohammed": "dina",
-    "entesarmahmoud": "entesar",
-    "nadamohammed":"nada mohamed",
-    "maiyaser":"mai",
-    "nourgamal":"nour gamal",
-    "rehabhassan":"rehab",
-    "75":"amira",
-    "fatmaabdelrahman":"fatma"
+    "lobna": {
+        "target_sheet_name": "lobna",
+        "display_name": "lobna"
+    },
+    "asmaamagdy": {
+        "target_sheet_name": "asmaa",
+        "display_name": "asmaamagdy"
+    },
+    "ayaahmed": {
+        "target_sheet_name": "aya ahmed",
+        "display_name": "ayaahmed"
+    },
+    "mennaahmed": {
+        "target_sheet_name": "menna",
+        "display_name": "mennaahmed"
+    },
+    "shahd": {
+        "target_sheet_name": "shahd",
+        "display_name": "shahd"
+    },
+    "walaamaged": {
+        "target_sheet_name": "walaa",
+        "display_name": "walaamaged"
+    },
+    "dinamohammed": {
+        "target_sheet_name": "dina",
+        "display_name": "dinamohammed"
+    },
+    "entesarmahmoud": {
+        "target_sheet_name": "entesar",
+        "display_name": "entesarmahmoud"
+    },
+    "nadamohammed": {
+        "target_sheet_name": "nada mohamed",
+        "display_name": "nadamohammed"
+    },
+    "maiyaser": {
+        "target_sheet_name": "mai",
+        "display_name": "maiyaser"
+    },
+    "nourgamal": {
+        "target_sheet_name": "nour gamal",
+        "display_name": "nourgamal"
+    },
+    "rehabhassan": {
+        "target_sheet_name": "rehab",
+        "display_name": "rehabhassan"
+    },
+    "75": {
+        "target_sheet_name": "amira",
+        "display_name": "75"
+    },
+    "fatmaabdelrahman": {
+        "target_sheet_name": "fatma",
+        "display_name": "fatmaabdelrahman"
+    },
+    "84": {
+        "target_sheet_name": "walaa ahmed",
+        "display_name": "84"
+    },
+    "77": {
+        "target_sheet_name": "asmaa vodafone",
+        "display_name": "77"
+    },
+    "nor ahmed": {
+        "target_sheet_name": "nour ahmed",
+        "display_name": "نور احمد"
+    },
+    "bsantmohammed": {
+        "target_sheet_name": "bsaant mohamed",
+        "display_name": "بسنت محمد"
+    },
+    "basant": {
+        "target_sheet_name": "basant tharwat",
+        "display_name": "بسنت ثروت"
+    },
+    "hayamayman": {
+        "target_sheet_name": "hayam",
+        "display_name": "هيام ايمن"
+    }
 }
