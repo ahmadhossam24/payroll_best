@@ -1,5 +1,5 @@
 attendance_result_dict={}
-#example
+# example
 # attendance_result_dict = {
 
 #     "employee_name": {

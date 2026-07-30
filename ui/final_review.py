@@ -12,27 +12,58 @@ Usage (as requested):
         ...
 
 Notes / assumptions made while implementing this:
-  - Uses PySide6. If you're on PySide2, only the import lines need changing
-    (QtWidgets/QtCore/QtGui import paths are the same names either way).
   - `attendance_result_dict` values are mutated in place, so any edit made in
     the Details popup (add/delete a manual row, or edit deduction_points /
     spin_deduction / notes_edit / value / points / note) is reflected
     immediately in data.globals.attendance_result_dict - no extra "save back"
     step is needed for the in-memory dict. The "Save Data" button at the
     bottom is left as a stub for you to wire up to persistence (DB / file).
-  - "final" formula literally uses fixed_salary (defaults to 3000 if a given
-    employee dict doesn't define it) + target_bonus + quality + main+ - main-,
-    matching the spec ("3000 + target_bonus + quality + main+ - main-").
+
+  - Each employee row now also carries a working-date range:
+
+        "start_working_date": "2026-06-01",
+        "end_working_date":   "2026-06-30",
+
+    rendered as two QDateEdit (calendar popup) cells in the main table,
+    defaulting to 2026-06-01 / 2026-06-30. Editing either date:
+      1. writes the new "yyyy-MM-dd" string straight back into
+         attendance_result_dict[emp_name],
+      2. drops every "absences" entry whose date falls outside the new
+         [start, end] range (mutating the list in place),
+      3. recomputes fixed_salary / quality / quality_base / final using
+         "range work days" = (end - start).days + 1, via:
+
+             fixed_salary = (range_work_days / 30) * 3000
+             quality_base = (range_work_days / 30) * 1000
+             quality      = quality_base - ((points_minus - points_plus) * 100)
+             quality      = min(quality, quality_base)   # cap, like before
+
+      4. refreshes only that row's numeric cells (the date-edit widgets
+         themselves are never rebuilt mid-signal, to avoid Qt deleting a
+         widget while it's still emitting its own signal).
+
+  - Because compute_employee_metrics() now always derives fixed_salary /
+    quality_base / range_work_days from start_working_date / end_working_date,
+    an emp dict without those keys defaults to a 0-day range (fixed_salary=0,
+    quality_base=0) until FinalDialog.refresh_table() seeds the defaults
+    (2026-06-01 / 2026-06-30) on first render.
+
+  - The Details popup re-reads emp_data (including the already-filtered
+    "absences" list) every time it's opened, so it always reflects the
+    current working-date range - no separate live-sync path is needed
+    since it's a modal dialog (the main table can't be edited while it's
+    open anyway).
 """
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from functools import partial
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QDate
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QDateEdit,
     QDialog,
     QHBoxLayout,
     QHeaderView,
@@ -96,6 +127,80 @@ MANUAL_CATEGORIES = {
 }
 MANUAL_COLUMNS = ["value", "points", "note"]
 MANUAL_HEADERS = ["Value", "Points", "Note"]
+
+# ---------------------------------------------------------------------------
+# Working-date-range defaults / helpers
+# ---------------------------------------------------------------------------
+
+DEFAULT_START_DATE_STR = "2026-06-01"
+DEFAULT_END_DATE_STR = "2026-06-30"
+DEFAULT_START_QDATE = QDate(2026, 6, 1)
+DEFAULT_END_QDATE = QDate(2026, 6, 30)
+
+
+def _coerce_to_date(value):
+    """Best-effort conversion of a stored date-ish value to a datetime.date."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return None
+        # Tolerate "2026-06-01" as well as "2026-06-01 08:00" style values.
+        candidate = text.split(" ")[0]
+        try:
+            return datetime.strptime(candidate, "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
+
+
+def _str_to_qdate(value: str, fallback: QDate) -> QDate:
+    """Parse a 'yyyy-MM-dd' string into a QDate, falling back if invalid."""
+    if isinstance(value, str):
+        qd = QDate.fromString(value.strip(), "yyyy-MM-dd")
+        if qd.isValid():
+            return qd
+    return fallback
+
+
+def compute_range_work_days(emp: dict) -> float:
+    """Inclusive day-count between start_working_date and end_working_date."""
+    start = _coerce_to_date(emp.get("start_working_date"))
+    end = _coerce_to_date(emp.get("end_working_date"))
+    if not start or not end or end < start:
+        return 0
+    return (end - start).days + 1
+
+
+def filter_absences_in_range(emp_data: dict, start: date, end: date) -> bool:
+    """
+    Drops every "absences" entry whose nested date falls outside [start, end]
+    (inclusive), mutating emp_data["absences"] in place. Entries whose date
+    can't be parsed are kept as-is (fail safe rather than silently dropped).
+    Returns True if the list was changed.
+    """
+    absences = emp_data.get("absences", [])
+    kept = []
+    changed = False
+    for entry in absences:
+        nested = entry.get("absence", {}) or {}
+        entry_date = _coerce_to_date(nested.get("date"))
+        if entry_date is None:
+            kept.append(entry)
+            continue
+        if start <= entry_date <= end:
+            kept.append(entry)
+        else:
+            changed = True
+    if changed:
+        emp_data["absences"] = kept
+    return changed
+
 
 def _to_number(value) -> float:
     """Coerce a value to a number, defaulting to 0 if it isn't numeric."""
@@ -179,12 +284,18 @@ def compute_employee_metrics(emp: dict) -> dict:
         + (emp.get("zero_accepts_deductions", 0) or 0)
     )
 
-    quality = 1000 - ((points_minus - points_plus) * 100)
+    range_work_days = compute_range_work_days(emp)
 
-    if quality > 1000:
-        quality=1000
+    # quality_base replaces the old flat "1000": both the base quality you'd
+    # get with zero net deduction points, and the cap on quality, now scale
+    # with the employee's working-date range.
+    quality_base = (range_work_days / 30) * 1000
+    quality = quality_base - ((points_minus - points_plus) * 100)
 
-    fixed_salary = emp.get("fixed_salary", 3000) or 0
+    if quality > quality_base:
+        quality = quality_base
+
+    fixed_salary = (range_work_days / 30) * 3000
     target_bonus = emp.get("target_bonus", 0) or 0
 
     final = fixed_salary + target_bonus + quality + main_plus - main_minus
@@ -194,7 +305,10 @@ def compute_employee_metrics(emp: dict) -> dict:
         "main_minus": main_minus,
         "points_plus": points_plus,
         "points_minus": points_minus,
+        "range_work_days": range_work_days,
+        "quality_base": quality_base,
         "quality": quality,
+        "fixed_salary": fixed_salary,
         "final": final,
     }
 
@@ -372,6 +486,12 @@ class DetailsDialog(QDialog):
 
     All edits write straight back into the employee dict that lives inside
     attendance_result_dict, so the underlying data is updated immediately.
+
+    The "absences" tab always reflects whatever is currently in
+    emp_data["absences"] - since FinalDialog already drops out-of-range
+    absences the moment a working date is changed, this popup shows the
+    filtered list automatically each time it's opened (no extra syncing
+    needed, as it's opened modally).
     """
 
     def __init__(self, emp_name: str, emp_data: dict, parent=None):
@@ -416,9 +536,13 @@ class DetailsDialog(QDialog):
     def _refresh_summary(self):
         metrics = compute_employee_metrics(self.emp_data)
         self.summary_label.setText(
+            f"Range: {self.emp_data.get('start_working_date', '')} \u2192 "
+            f"{self.emp_data.get('end_working_date', '')} "
+            f"({metrics['range_work_days']} days)   |   "
+            f"Fixed Salary: {metrics['fixed_salary']:.2f}   |   "
             f"Main +: {metrics['main_plus']}   |   Main -: {metrics['main_minus']}   |   "
             f"Points +: {metrics['points_plus']}   |   Points -: {metrics['points_minus']}   |   "
-            f"Quality: {metrics['quality']}   |   Final: {metrics['final']}"
+            f"Quality: {metrics['quality']:.2f}   |   Final: {metrics['final']:.2f}"
         )
 
     # -- deduction-style tabs (absences, permissions, latencies, ...) -----
@@ -583,6 +707,8 @@ class FinalDialog(QDialog):
         "Employee",
         "Achieved/Target",
         "Target Bonus",
+        "Start Working Date",
+        "End Working Date",
         "Main +",
         "Main -",
         "Points +",
@@ -592,10 +718,29 @@ class FinalDialog(QDialog):
         "Details",
     ]
 
+    # Column indices, named for readability.
+    COL_EMPLOYEE = 0
+    COL_ACHIEVED_TARGET = 1
+    COL_TARGET_BONUS = 2
+    COL_START_DATE = 3
+    COL_END_DATE = 4
+    COL_MAIN_PLUS = 5
+    COL_MAIN_MINUS = 6
+    COL_POINTS_PLUS = 7
+    COL_POINTS_MINUS = 8
+    COL_QUALITY = 9
+    COL_FINAL = 10
+    COL_DETAILS = 11
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Payroll Review")
-        self.resize(1250, 700)
+        self.resize(1350, 700)
+
+        # emp_name -> current row index, kept up to date by refresh_table()
+        # so date-edit callbacks can find "their" row without needing to
+        # rebuild/search the whole table.
+        self.emp_name_to_row: dict[str, int] = {}
 
         layout = QVBoxLayout(self)
 
@@ -629,35 +774,109 @@ class FinalDialog(QDialog):
     def refresh_table(self):
         self.table.setRowCount(0)
         self.table.setRowCount(len(attendance_result_dict))
+        self.emp_name_to_row = {}
 
         for row, (emp_name, emp_data) in enumerate(attendance_result_dict.items()):
+            self.emp_name_to_row[emp_name] = row
+
+            # Seed default working-date range the first time we see this
+            # employee, mirroring it straight into attendance_result_dict.
+            emp_data.setdefault("start_working_date", DEFAULT_START_DATE_STR)
+            emp_data.setdefault("end_working_date", DEFAULT_END_DATE_STR)
+
             metrics = compute_employee_metrics(emp_data)
 
             achieved = emp_data.get("achieved", 0)
             target = emp_data.get("target", 0)
 
-            row_values = [
-                emp_name,
-                f"{achieved}/{target}",
-                emp_data.get("target_bonus", 0),
-                metrics["main_plus"],
-                metrics["main_minus"],
-                metrics["points_plus"],
-                metrics["points_minus"],
-                metrics["quality"],
-                metrics["final"],
-            ]
-
-            for col, value in enumerate(row_values):
+            # -- static text columns -----------------------------------
+            static_values = {
+                self.COL_EMPLOYEE: emp_name,
+                self.COL_ACHIEVED_TARGET: f"{achieved}/{target}",
+                self.COL_TARGET_BONUS: emp_data.get("target_bonus", 0),
+                self.COL_MAIN_PLUS: metrics["main_plus"],
+                self.COL_MAIN_MINUS: metrics["main_minus"],
+                self.COL_POINTS_PLUS: metrics["points_plus"],
+                self.COL_POINTS_MINUS: metrics["points_minus"],
+                self.COL_QUALITY: metrics["quality"],
+                self.COL_FINAL: metrics["final"],
+            }
+            for col, value in static_values.items():
                 cell = QTableWidgetItem(str(value))
                 cell.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, col, cell)
 
+            # -- start / end working date pickers -----------------------
+            start_edit = QDateEdit()
+            start_edit.setCalendarPopup(True)
+            start_edit.setDisplayFormat("yyyy-MM-dd")
+            start_edit.setDate(_str_to_qdate(emp_data["start_working_date"], DEFAULT_START_QDATE))
+            start_edit.dateChanged.connect(partial(self._on_start_date_changed, emp_name=emp_name))
+            self.table.setCellWidget(row, self.COL_START_DATE, start_edit)
+
+            end_edit = QDateEdit()
+            end_edit.setCalendarPopup(True)
+            end_edit.setDisplayFormat("yyyy-MM-dd")
+            end_edit.setDate(_str_to_qdate(emp_data["end_working_date"], DEFAULT_END_QDATE))
+            end_edit.dateChanged.connect(partial(self._on_end_date_changed, emp_name=emp_name))
+            self.table.setCellWidget(row, self.COL_END_DATE, end_edit)
+
+            # -- details button -------------------------------------------
             details_btn = QPushButton("Details")
             details_btn.clicked.connect(partial(self.open_details, emp_name=emp_name))
-            self.table.setCellWidget(row, len(self.COLUMNS) - 1, details_btn)
+            self.table.setCellWidget(row, self.COL_DETAILS, details_btn)
 
         self.table.resizeRowsToContents()
+
+    # -- live date-range editing ----------------------------------------
+
+    def _on_start_date_changed(self, qdate: QDate, emp_name: str):
+        self._handle_date_change(emp_name, "start_working_date", qdate)
+
+    def _on_end_date_changed(self, qdate: QDate, emp_name: str):
+        self._handle_date_change(emp_name, "end_working_date", qdate)
+
+    def _handle_date_change(self, emp_name: str, key: str, qdate: QDate):
+        emp_data = attendance_result_dict.get(emp_name)
+        if emp_data is None:
+            return
+
+        emp_data[key] = qdate.toString("yyyy-MM-dd")
+
+        start = _coerce_to_date(emp_data.get("start_working_date"))
+        end = _coerce_to_date(emp_data.get("end_working_date"))
+        if start and end and end >= start:
+            filter_absences_in_range(emp_data, start, end)
+
+        row = self.emp_name_to_row.get(emp_name)
+        if row is not None:
+            # Only touch the numeric item cells here - never rebuild the
+            # date-edit widgets themselves while one of them is still
+            # emitting this very signal.
+            self._update_row_metrics(row, emp_data)
+
+    def _update_row_metrics(self, row: int, emp_data: dict):
+        metrics = compute_employee_metrics(emp_data)
+        achieved = emp_data.get("achieved", 0)
+        target = emp_data.get("target", 0)
+
+        values = {
+            self.COL_ACHIEVED_TARGET: f"{achieved}/{target}",
+            self.COL_TARGET_BONUS: emp_data.get("target_bonus", 0),
+            self.COL_MAIN_PLUS: metrics["main_plus"],
+            self.COL_MAIN_MINUS: metrics["main_minus"],
+            self.COL_POINTS_PLUS: metrics["points_plus"],
+            self.COL_POINTS_MINUS: metrics["points_minus"],
+            self.COL_QUALITY: metrics["quality"],
+            self.COL_FINAL: metrics["final"],
+        }
+        for col, value in values.items():
+            item = self.table.item(row, col)
+            if item is None:
+                item = QTableWidgetItem()
+                item.setTextAlignment(Qt.AlignCenter)
+                self.table.setItem(row, col, item)
+            item.setText(str(value))
 
     def open_details(self, emp_name: str):
         emp_data = attendance_result_dict.get(emp_name)
@@ -668,7 +887,9 @@ class FinalDialog(QDialog):
         dialog.exec()
 
         # attendance_result_dict was mutated in place while the popup was
-        # open; re-render the main table so achieved values are up to date.
+        # open; re-render the main table's numeric cells so everything
+        # (including achieved values) is up to date. Full refresh_table()
+        # is safe here since we're not inside a widget's own signal.
         self.refresh_table()
 
     # -- bottom action buttons (stubs) -----------------------------------
@@ -686,6 +907,8 @@ class FinalDialog(QDialog):
 
         headers = [
             "Employee Name",
+            "Start Working Date",
+            "End Working Date",
             "Main",
             "Main After Deductions/Additions",
             "Quality",
@@ -712,10 +935,10 @@ class FinalDialog(QDialog):
         for emp_name, emp_data in attendance_result_dict.items():
             metrics = compute_employee_metrics(emp_data)
 
-            main = 3000
+            main = metrics["fixed_salary"]
             main_after = main + metrics["main_plus"] - metrics["main_minus"]
 
-            quality_base = 1000
+            quality_base = metrics["quality_base"]
             quality_after = quality_base + metrics["points_plus"] - metrics["points_minus"]
 
             target = emp_data.get("target", 0)
@@ -727,6 +950,8 @@ class FinalDialog(QDialog):
 
             row = [
                 emp_name,
+                emp_data.get("start_working_date", ""),
+                emp_data.get("end_working_date", ""),
                 main,
                 main_after,
                 quality_base,
@@ -744,7 +969,7 @@ class FinalDialog(QDialog):
             for col in range(1, len(headers) + 1):
                 sheet.cell(row=sheet.max_row, column=col).font = cell_font
 
-        widths = [22, 10, 26, 10, 28, 10, 10, 14, 14, 60]
+        widths = [22, 16, 16, 10, 26, 10, 28, 10, 10, 14, 14, 60]
         for col_idx, width in enumerate(widths, start=1):
             sheet.column_dimensions[chr(64 + col_idx)].width = width
 
