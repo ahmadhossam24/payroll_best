@@ -63,6 +63,7 @@ from functools import partial
 from PySide6.QtCore import Qt, QDate
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QCheckBox,
     QDateEdit,
     QDialog,
     QHBoxLayout,
@@ -295,6 +296,10 @@ def compute_employee_metrics(emp: dict) -> dict:
     if quality > quality_base:
         quality = quality_base
 
+    quality_cancelled = bool(emp.get("quality_cancelled", False))
+    if quality_cancelled:
+        quality = 0
+
     fixed_salary = (range_work_days / 30) * 3000
     target_bonus = emp.get("target_bonus", 0) or 0
 
@@ -307,6 +312,7 @@ def compute_employee_metrics(emp: dict) -> dict:
         "points_minus": points_minus,
         "range_work_days": range_work_days,
         "quality_base": quality_base,
+        "quality_cancelled": quality_cancelled,
         "quality": quality,
         "fixed_salary": fixed_salary,
         "final": final,
@@ -714,6 +720,7 @@ class FinalDialog(QDialog):
         "Points +",
         "Points -",
         "Quality",
+        "Cancel Quality",
         "Final",
         "Details",
     ]
@@ -729,8 +736,9 @@ class FinalDialog(QDialog):
     COL_POINTS_PLUS = 7
     COL_POINTS_MINUS = 8
     COL_QUALITY = 9
-    COL_FINAL = 10
-    COL_DETAILS = 11
+    COL_CANCEL_QUALITY = 10
+    COL_FINAL = 11
+    COL_DETAILS = 12
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -821,6 +829,19 @@ class FinalDialog(QDialog):
             end_edit.dateChanged.connect(partial(self._on_end_date_changed, emp_name=emp_name))
             self.table.setCellWidget(row, self.COL_END_DATE, end_edit)
 
+            # -- cancel-quality checkbox ---------------------------------
+            cancel_checkbox = QCheckBox()
+            cancel_checkbox.setChecked(bool(emp_data.get("quality_cancelled", False)))
+            cancel_checkbox.stateChanged.connect(
+                partial(self._on_cancel_quality_changed, emp_name=emp_name)
+            )
+            checkbox_container = QWidget()
+            checkbox_layout = QHBoxLayout(checkbox_container)
+            checkbox_layout.addWidget(cancel_checkbox)
+            checkbox_layout.setAlignment(Qt.AlignCenter)
+            checkbox_layout.setContentsMargins(0, 0, 0, 0)
+            self.table.setCellWidget(row, self.COL_CANCEL_QUALITY, checkbox_container)
+
             # -- details button -------------------------------------------
             details_btn = QPushButton("Details")
             details_btn.clicked.connect(partial(self.open_details, emp_name=emp_name))
@@ -835,6 +856,19 @@ class FinalDialog(QDialog):
 
     def _on_end_date_changed(self, qdate: QDate, emp_name: str):
         self._handle_date_change(emp_name, "end_working_date", qdate)
+
+    def _on_cancel_quality_changed(self, state: int, emp_name: str):
+        emp_data = attendance_result_dict.get(emp_name)
+        if emp_data is None:
+            return
+
+        # state is a Qt.CheckState int (0 = unchecked, 2 = checked for a
+        # non-tristate checkbox), so bool(state) is exactly what we want.
+        emp_data["quality_cancelled"] = bool(state)
+
+        row = self.emp_name_to_row.get(emp_name)
+        if row is not None:
+            self._update_row_metrics(row, emp_data)
 
     def _handle_date_change(self, emp_name: str, key: str, qdate: QDate):
         emp_data = attendance_result_dict.get(emp_name)
@@ -938,8 +972,8 @@ class FinalDialog(QDialog):
             main = metrics["fixed_salary"]
             main_after = main + metrics["main_plus"] - metrics["main_minus"]
 
-            quality_base = metrics["quality_base"]
-            quality_after = quality_base + metrics["points_plus"] - metrics["points_minus"]
+            quality_base = 0 if metrics["quality_cancelled"] else metrics["quality_base"]
+            quality_after = 0 if metrics["quality_cancelled"] else quality_base + (metrics["points_plus"]*100) - (metrics["points_minus"]*100)
 
             target = emp_data.get("target", 0)
             achieved = emp_data.get("achieved", 0)
