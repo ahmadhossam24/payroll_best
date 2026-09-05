@@ -72,6 +72,7 @@ Notes / assumptions made while implementing this:
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime
 from functools import partial
 
@@ -265,6 +266,19 @@ def _parse_number(text: str):
         return float(text)
     except ValueError:
         return text
+
+
+# ---------------------------------------------------------------------------
+# JSON save/load helpers (Save Data / Load Data buttons)
+# ---------------------------------------------------------------------------
+
+def _json_default(obj):
+    """json.dump(default=...) hook: turns date/datetime into ISO strings."""
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%d %H:%M:%S")
+    if isinstance(obj, date):
+        return obj.strftime("%Y-%m-%d")
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
 
 # ---------------------------------------------------------------------------
@@ -512,7 +526,7 @@ def build_employee_notes(emp: dict) -> str:
         lines.append(f"work days: {range_work_days}")
 
     zero_accepts_deductions = emp.get("zero_accepts_deductions", 0) or 0
-    lines.append(f"zero accepts : {zero_accepts_deductions/0.25}")
+    lines.append(f"zero accepts deductions: {zero_accepts_deductions/0.25}")
 
     return "\n".join(lines)
 # ---------------------------------------------------------------------------
@@ -802,15 +816,18 @@ class FinalDialog(QDialog):
         btn_layout = QHBoxLayout()
         self.export_pdf_btn = QPushButton("Export PDF")
         self.export_excel_btn = QPushButton("Export Excel")
+        self.load_btn = QPushButton("Load Data")
         self.save_btn = QPushButton("Save Data")
 
         self.export_pdf_btn.clicked.connect(self.export_pdf)
         self.export_excel_btn.clicked.connect(self.export_excel)
+        self.load_btn.clicked.connect(self.load_data)
         self.save_btn.clicked.connect(self.save_data)
 
         btn_layout.addStretch()
         btn_layout.addWidget(self.export_pdf_btn)
         btn_layout.addWidget(self.export_excel_btn)
+        btn_layout.addWidget(self.load_btn)
         btn_layout.addWidget(self.save_btn)
         layout.addLayout(btn_layout)
 
@@ -1086,5 +1103,68 @@ class FinalDialog(QDialog):
         QMessageBox.information(self, "Export Complete", f"Excel file saved to:\n{path}")
 
     def save_data(self):
-        """TODO: implement persistence of attendance_result_dict."""
-        pass
+        """Dump the whole attendance_result_dict to a JSON file the user picks."""
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Save Data", "attendance_data.json", "JSON Files (*.json)"
+        )
+        if not path:
+            return
+
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(
+                    attendance_result_dict,
+                    f,
+                    ensure_ascii=False,
+                    indent=2,
+                    default=_json_default,
+                )
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Save Failed", f"Could not save file:\n{exc}")
+            return
+
+        QMessageBox.information(self, "Save Complete", f"Data saved to:\n{path}")
+
+    def load_data(self):
+        """
+        Load a previously saved JSON file back into attendance_result_dict.
+
+        The dict is updated in place (cleared, then repopulated) rather than
+        rebound, since other modules hold a reference to this same object
+        (same pattern the rest of the file relies on for in-place mutation).
+        """
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Load Data", "", "JSON Files (*.json)"
+        )
+        if not path:
+            return
+
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Load Failed", f"Could not read file:\n{exc}")
+            return
+
+        if not isinstance(loaded, dict):
+            QMessageBox.critical(
+                self, "Load Failed", "That file doesn't contain a valid employee dataset."
+            )
+            return
+
+        if attendance_result_dict:
+            reply = QMessageBox.question(
+                self,
+                "Load Data",
+                "This will replace all currently loaded employee data. Continue?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if reply != QMessageBox.Yes:
+                return
+
+        attendance_result_dict.clear()
+        attendance_result_dict.update(loaded)
+
+        self.refresh_table()
+        QMessageBox.information(self, "Load Complete", f"Data loaded from:\n{path}")
