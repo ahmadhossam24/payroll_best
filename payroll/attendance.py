@@ -88,8 +88,8 @@ def calculate_absent_days(employee_days):
         for day in employee_days.keys()
     }
 
-    start_date = datetime.strptime("2026-06-01", "%Y-%m-%d").date()
-    end_date = datetime.strptime("2026-06-30", "%Y-%m-%d").date()
+    start_date = datetime.strptime("2026-07-01", "%Y-%m-%d").date()
+    end_date = datetime.strptime("2026-07-30", "%Y-%m-%d").date()
     # start_date = min(present_dates)
     # end_date = max(present_dates)
 

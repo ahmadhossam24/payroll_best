@@ -27,10 +27,6 @@
         "target_sheet_name": "dina",
         "display_name": "dinamohammed"
     },
-    "entesarmahmoud": {
-        "target_sheet_name": "entesar",
-        "display_name": "entesarmahmoud"
-    },
     "nadamohammed": {
         "target_sheet_name": "nada mohamed",
         "display_name": "nadamohammed"
@@ -51,14 +47,6 @@
         "target_sheet_name": "amira",
         "display_name": "75"
     },
-    "fatmaabdelrahman": {
-        "target_sheet_name": "fatma",
-        "display_name": "fatmaabdelrahman"
-    },
-    "84": {
-        "target_sheet_name": "walaa ahmed",
-        "display_name": "84"
-    },
     "77": {
         "target_sheet_name": "asmaa vodafone",
         "display_name": "77"
@@ -78,5 +66,57 @@
     "hayamayman": {
         "target_sheet_name": "hayam",
         "display_name": "هيام ايمن"
+    },
+    "maysaa": {
+        "target_sheet_name": "ميساء",
+        "display_name": "Maysaa"
+    },
+    "salwahassan": {
+        "target_sheet_name": "سلوي",
+        "display_name": "Salwahassan"
+    },
+    "habibaalaa": {
+        "target_sheet_name": "حبيبه",
+        "display_name": "Habibaalaa"
+    },
+    "shahendaalaa": {
+        "target_sheet_name": "shahinda",
+        "display_name": "Shahinda"
+    },
+    "gehad": {
+        "target_sheet_name": "gehad",
+        "display_name": "Gehad"
+    },
+    "nourmohsen": {
+        "target_sheet_name": "nourhan mohsen",
+        "display_name": "Nourmohsen"
+    },
+    "malakmahmoud": {
+        "target_sheet_name": "malak mahmoud",
+        "display_name": "Malakmahmoud"
+    },
+    "sarafathy": {
+        "target_sheet_name": "sara",
+        "display_name": "Sarafathy"
+    },
+    "marwamahmoud": {
+        "target_sheet_name": "marwa",
+        "display_name": "Marwamahmoud"
+    },
+    "alaamahmoud": {
+        "target_sheet_name": "alaa",
+        "display_name": "alaa"
+    },
+    "fatmaabdelrahman": {
+        "target_sheet_name": "فاطمه",
+        "display_name": "fatmaabdelrahman"
+    },
+    "84": {
+        "target_sheet_name": "ولاء احمد",
+        "display_name": "84"
+    },
+    "entesarmahmoud": {
+        "target_sheet_name": "انتصار",
+        "display_name": "entesarmahmoud"
     }
 }

@@ -31,14 +31,40 @@ COLUMNS = [
 OUTPUT_DIR = 'reports'
 # ---------- End Configuration ----------
 
+# Columns that should have a grey background (only their value cells)
+GREY_COLUMNS = {
+    'الاساسي بعد الخصم',
+    'الكوالتي بعد خصم النقاط',
+    'الكوميشن',
+    'المرتب'
+}
+
 def reshape_arabic(text):
     """Reshape Arabic letters, then apply BiDi with RTL base direction."""
     if not isinstance(text, str):
         return str(text)
-    # 1. Connect Arabic letters
     reshaped = arabic_reshaper.reshape(text)
-    # 2. Reorder for visual display (RTL base)
     return get_display(reshaped, base_dir='R')
+
+def format_value(value):
+    """
+    Convert numeric values to integer strings (drop .0) if they are whole numbers.
+    If not numeric, return the original string representation.
+    """
+    if pd.isna(value):
+        return ''
+    try:
+        # Try to convert to float
+        num = float(value)
+        # If it's a whole number, show as integer
+        if num.is_integer():
+            return str(int(num))
+        else:
+            # Keep as float with one decimal? or keep original string? We'll keep original string.
+            return str(value)
+    except (ValueError, TypeError):
+        # Not a number, return as string
+        return str(value)
 
 def create_agent_pdf(agent_data, agent_name, output_path, font_name):
     doc = SimpleDocTemplate(
@@ -64,7 +90,6 @@ def create_agent_pdf(agent_data, agent_name, output_path, font_name):
         spaceAfter=0.5*cm,
     )
 
-    # Right‑aligned for both table and paragraph to keep RTL text wrapping correctly
     cell_style = ParagraphStyle(
         'CellStyle',
         parent=base_style,
@@ -73,45 +98,62 @@ def create_agent_pdf(agent_data, agent_name, output_path, font_name):
     )
 
     table_data = []
-    for col in COLUMNS:
-        if col in agent_data:
-            field_display = reshape_arabic(col)
-            value_raw = agent_data[col]
+    grey_row_indices = []
+
+    for row_idx, col in enumerate(COLUMNS):
+        if col not in agent_data:
+            continue
+        field_display = reshape_arabic(col)
+        value_raw = agent_data[col]
+
+        # Special handling for 'ملاحظات' – keep raw text (with line breaks)
+        if col == 'ملاحظات':
             if pd.isna(value_raw):
                 value_str = ''
             else:
                 value_str = str(value_raw)
+            # Preserve line breaks
+            lines = value_str.splitlines()
+            reshaped_lines = [reshape_arabic(line) for line in lines]
+            value_display = '<br/>'.join(reshaped_lines)
+        else:
+            # Apply integer formatting to all other columns
+            value_str = format_value(value_raw)
+            value_display = reshape_arabic(value_str)
 
-            # Preserve line breaks for "ملاحظات"
-            if col == 'ملاحظات' and value_str:
-                lines = value_str.splitlines()
-                reshaped_lines = [reshape_arabic(line) for line in lines]
-                value_display = '<br/>'.join(reshaped_lines)
-            else:
-                value_display = reshape_arabic(value_str)
+        table_data.append([
+            Paragraph(field_display, cell_style),
+            Paragraph(value_display, cell_style)
+        ])
 
-            table_data.append([
-                Paragraph(field_display, cell_style),
-                Paragraph(value_display, cell_style)
-            ])
+        # If this column needs grey background, record its row index
+        if col in GREY_COLUMNS:
+            grey_row_indices.append(row_idx)
 
     col_widths = [doc.width * 0.25, doc.width * 0.75]
     table = Table(table_data, colWidths=col_widths, repeatRows=0)
 
-    table.setStyle(TableStyle([
+    # Build base style
+    style_commands = [
         ('FONTNAME', (0,0), (-1,-1), font_name),
         ('FONTSIZE', (0,0), (-1,-1), 10),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ALIGN', (0,0), (0,-1), 'RIGHT'),   # field names right‑aligned
-        ('ALIGN', (1,0), (1,-1), 'RIGHT'),   # values right‑aligned (fixes wrapping)
+        ('ALIGN', (1,0), (1,-1), 'RIGHT'),   # values right‑aligned
         ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-        ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
-        ('BACKGROUND', (1,0), (1,-1), colors.white),
+        ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),   # field names light grey
+        ('BACKGROUND', (1,0), (1,-1), colors.white),       # values white by default
         ('TOPPADDING', (0,0), (-1,-1), 5),
         ('BOTTOMPADDING', (0,0), (-1,-1), 5),
         ('LEFTPADDING', (0,0), (-1,-1), 5),
         ('RIGHTPADDING', (0,0), (-1,-1), 5),
-    ]))
+    ]
+
+    # Add grey background for the value cells of specified rows – using light grey to match field names
+    for row_idx in grey_row_indices:
+        style_commands.append(('BACKGROUND', (1, row_idx), (1, row_idx), colors.lightgrey))
+
+    table.setStyle(TableStyle(style_commands))
 
     story = []
     if agent_name and agent_name.strip():
@@ -190,4 +232,3 @@ if __name__ == "__main__":
         out_dir = OUTPUT_DIR
 
     generate_reports(excel_file, out_dir)
-    

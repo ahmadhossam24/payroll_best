@@ -133,10 +133,10 @@ MANUAL_HEADERS = ["Value", "Points", "Note"]
 # Working-date-range defaults / helpers
 # ---------------------------------------------------------------------------
 
-DEFAULT_START_DATE_STR = "2026-06-01"
-DEFAULT_END_DATE_STR = "2026-06-30"
-DEFAULT_START_QDATE = QDate(2026, 6, 1)
-DEFAULT_END_QDATE = QDate(2026, 6, 30)
+DEFAULT_START_DATE_STR = "2026-08-01"
+DEFAULT_END_DATE_STR = "2026-08-31"
+DEFAULT_START_QDATE = QDate(2026, 8, 1)
+DEFAULT_END_QDATE = QDate(2026, 8, 31)
 
 
 def _coerce_to_date(value):
@@ -290,7 +290,7 @@ def compute_employee_metrics(emp: dict) -> dict:
     # quality_base replaces the old flat "1000": both the base quality you'd
     # get with zero net deduction points, and the cap on quality, now scale
     # with the employee's working-date range.
-    quality_base = (range_work_days / 30) * 1000
+    quality_base = (range_work_days / 31) * 1000
     quality = quality_base - ((points_minus - points_plus) * 100)
 
     if quality > quality_base:
@@ -300,7 +300,7 @@ def compute_employee_metrics(emp: dict) -> dict:
     if quality_cancelled:
         quality = 0
 
-    fixed_salary = (range_work_days / 30) * 3000
+    fixed_salary = (range_work_days / 31) * 3000
     target_bonus = emp.get("target_bonus", 0) or 0
 
     final = fixed_salary + target_bonus + quality + main_plus - main_minus
