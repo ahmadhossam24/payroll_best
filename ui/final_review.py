@@ -53,6 +53,21 @@ Notes / assumptions made while implementing this:
     current working-date range - no separate live-sync path is needed
     since it's a modal dialog (the main table can't be edited while it's
     open anyway).
+
+  - New: a "New Employee" checkbox was added to the main table. When
+    checked, it writes emp_data["is_new_employee"] = True, and
+    compute_employee_metrics() then excludes "zero_accepts_deductions"
+    from points_minus (so quality is computed without that penalty).
+    Unchecking it restores the previous behaviour (zero_accepts_deductions
+    counts against points_minus again) - the flag is just a plain boolean
+    on the employee dict, so the effect is fully reversible by toggling
+    the checkbox, same as "Cancel Quality".
+
+  - New: build_employee_notes() (used by export_excel) now appends:
+      * f"work days: {range_work_days}" - only when is_new_employee is
+        checked for that employee.
+      * f"zero accepts deductions: {zero_accepts_deductions}" - always,
+        regardless of the checkbox state.
 """
 
 from __future__ import annotations
@@ -279,10 +294,18 @@ def compute_employee_metrics(emp: dict) -> dict:
     ) + sum_spin_deduction()
 
     points_plus = sum(_to_number(item.get("points", 0)) or 0 for item in emp.get("manually_additions", []))
+
+    # "New Employee" checkbox: when set, zero_accepts_deductions is excluded
+    # from points_minus (fully reversible - unchecking restores it, since
+    # this is just re-read from emp["is_new_employee"] every time).
+    is_new_employee = bool(emp.get("is_new_employee", False))
+    zero_accepts_deductions = emp.get("zero_accepts_deductions", 0) or 0
+    zero_accepts_contribution = 0 if is_new_employee else zero_accepts_deductions
+
     points_minus = (
         sum(_to_number(item.get("points", 0)) or 0 for item in emp.get("manually_deductions", []))
         + sum_deduction_points()
-        + (emp.get("zero_accepts_deductions", 0) or 0)
+        + zero_accepts_contribution
     )
 
     range_work_days = compute_range_work_days(emp)
@@ -316,6 +339,8 @@ def compute_employee_metrics(emp: dict) -> dict:
         "quality": quality,
         "fixed_salary": fixed_salary,
         "final": final,
+        "is_new_employee": is_new_employee,
+        "zero_accepts_deductions": zero_accepts_deductions,
     }
 
 # ---------------------------------------------------------------------------
@@ -464,6 +489,11 @@ def build_employee_notes(emp: dict) -> str:
     latencies, early_leaves, need_reviews, manual additions/deductions),
     skipping any sub-part whose value is 0 / "" / None, plus the
     target_bonus_explain line if present.
+
+    Also appends (used by export_excel):
+      - "work days: {range_work_days}" - only when the employee is flagged
+        as new (emp["is_new_employee"] checkbox checked).
+      - "zero accepts deductions: {zero_accepts_deductions}" - always.
     """
     lines = []
 
@@ -476,6 +506,13 @@ def build_employee_notes(emp: dict) -> str:
     explain = emp.get("target_bonus_explain")
     if not _is_empty(explain):
         lines.append(str(explain))
+
+    if bool(emp.get("is_new_employee", False)):
+        range_work_days = compute_range_work_days(emp)
+        lines.append(f"work days: {range_work_days}")
+
+    zero_accepts_deductions = emp.get("zero_accepts_deductions", 0) or 0
+    lines.append(f"zero accepts : {zero_accepts_deductions/0.25}")
 
     return "\n".join(lines)
 # ---------------------------------------------------------------------------
@@ -721,6 +758,7 @@ class FinalDialog(QDialog):
         "Points -",
         "Quality",
         "Cancel Quality",
+        "New Employee",
         "Final",
         "Details",
     ]
@@ -737,8 +775,9 @@ class FinalDialog(QDialog):
     COL_POINTS_MINUS = 8
     COL_QUALITY = 9
     COL_CANCEL_QUALITY = 10
-    COL_FINAL = 11
-    COL_DETAILS = 12
+    COL_NEW_EMPLOYEE = 11
+    COL_FINAL = 12
+    COL_DETAILS = 13
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -791,6 +830,7 @@ class FinalDialog(QDialog):
             # employee, mirroring it straight into attendance_result_dict.
             emp_data.setdefault("start_working_date", DEFAULT_START_DATE_STR)
             emp_data.setdefault("end_working_date", DEFAULT_END_DATE_STR)
+            emp_data.setdefault("is_new_employee", False)
 
             metrics = compute_employee_metrics(emp_data)
 
@@ -842,6 +882,22 @@ class FinalDialog(QDialog):
             checkbox_layout.setContentsMargins(0, 0, 0, 0)
             self.table.setCellWidget(row, self.COL_CANCEL_QUALITY, checkbox_container)
 
+            # -- new-employee checkbox ------------------------------------
+            # Reversible flag: while checked, zero_accepts_deductions is
+            # excluded from points_minus (see compute_employee_metrics);
+            # unchecking it puts things back exactly as before.
+            new_employee_checkbox = QCheckBox()
+            new_employee_checkbox.setChecked(bool(emp_data.get("is_new_employee", False)))
+            new_employee_checkbox.stateChanged.connect(
+                partial(self._on_new_employee_changed, emp_name=emp_name)
+            )
+            new_employee_container = QWidget()
+            new_employee_layout = QHBoxLayout(new_employee_container)
+            new_employee_layout.addWidget(new_employee_checkbox)
+            new_employee_layout.setAlignment(Qt.AlignCenter)
+            new_employee_layout.setContentsMargins(0, 0, 0, 0)
+            self.table.setCellWidget(row, self.COL_NEW_EMPLOYEE, new_employee_container)
+
             # -- details button -------------------------------------------
             details_btn = QPushButton("Details")
             details_btn.clicked.connect(partial(self.open_details, emp_name=emp_name))
@@ -865,6 +921,20 @@ class FinalDialog(QDialog):
         # state is a Qt.CheckState int (0 = unchecked, 2 = checked for a
         # non-tristate checkbox), so bool(state) is exactly what we want.
         emp_data["quality_cancelled"] = bool(state)
+
+        row = self.emp_name_to_row.get(emp_name)
+        if row is not None:
+            self._update_row_metrics(row, emp_data)
+
+    def _on_new_employee_changed(self, state: int, emp_name: str):
+        emp_data = attendance_result_dict.get(emp_name)
+        if emp_data is None:
+            return
+
+        # Reversible: toggling this checkbox just flips the boolean flag,
+        # so re-checking/un-checking always recomputes points_minus /
+        # quality / final from scratch via compute_employee_metrics().
+        emp_data["is_new_employee"] = bool(state)
 
         row = self.emp_name_to_row.get(emp_name)
         if row is not None:
