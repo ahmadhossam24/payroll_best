@@ -13,7 +13,7 @@ WORK_END_MINUTE = 25
 
 WORKING_DAYS = {0,1,2,3,5,6}
 
-def build_employee_summary(days):
+def build_employee_summary(days,start_date,end_date):
 
     result = {
         "absent_days": [],
@@ -23,7 +23,7 @@ def build_employee_summary(days):
         "needs_review": []
     }
 
-    result["absent_days"] = calculate_absent_days(days)
+    result["absent_days"] = calculate_absent_days(days,start_date,end_date)
 
     for date, summary in days.items():
 
@@ -75,7 +75,7 @@ def get_working_dates(start_date, end_date):
 
     return result
 
-def calculate_absent_days(employee_days):
+def calculate_absent_days(employee_days,passed_start_date,passed_end_date):
 
     if not employee_days:
         return []
@@ -88,10 +88,8 @@ def calculate_absent_days(employee_days):
         for day in employee_days.keys()
     }
 
-    start_date = datetime.strptime("2026-07-01", "%Y-%m-%d").date()
-    end_date = datetime.strptime("2026-07-30", "%Y-%m-%d").date()
-    # start_date = min(present_dates)
-    # end_date = max(present_dates)
+    start_date = datetime.strptime(f"{passed_start_date}", "%Y-%m-%d").date()
+    end_date = datetime.strptime(f"{passed_end_date}", "%Y-%m-%d").date()
 
     expected_dates = get_working_dates(
         start_date,
@@ -122,7 +120,7 @@ def parse_datetime(text):
         "%d/%m/%Y %I:%M %p"
     )
 
-def analyze_attendance(excel_file):
+def analyze_attendance(excel_file,start_date,end_date):
 
     records = load_fingerprints(excel_file)
 
@@ -136,9 +134,7 @@ def analyze_attendance(excel_file):
 
         result[employee] = {
             "days": employee_days,
-            "summary": build_employee_summary(
-                employee_days
-            )
+            "summary": build_employee_summary(employee_days,start_date,end_date)
         }
 
     return result

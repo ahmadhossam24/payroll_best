@@ -144,3 +144,14 @@ attendance_result_dict = {
 بعض الهبل في كتابة الملاحظات
 حساب الاساسي والكواليتي في حالةه كان الشهر 31 او 28 وكان الشهر غير مكتمل بالنسبة للموظف
 مراعاة تاثير عدد ايام الشهر اذا كان حساب قيمة خصم او النقاط تلقائي
+-------------------------------------------------------------------------------------------
+ليه ال permissions & early leaves مش بتظهر في الصفحه الاخيرة
+اتاكد ان المانوال ديدكشنز عند اضافتها من الصفحه الاخيرة بتضاف للتوتال وبتضاف للنوتس
+-------
+add date range in main page and wire it 0
+final excel names should be display name
+float numbers should appear as int numbers in final excel
+main salary should appear in final page
+arabify the program 0
+sync excel heads to be converted to pdf 0
+add button "transfer excel to pdf" 0

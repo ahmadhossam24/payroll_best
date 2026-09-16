@@ -98,7 +98,7 @@ from PySide6.QtWidgets import (
 from data.globals import attendance_result_dict
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
-
+from excel_to_pdf_per_row import generate_reports_from_gui
 # ---------------------------------------------------------------------------
 # Category configuration
 # ---------------------------------------------------------------------------
@@ -109,51 +109,45 @@ from openpyxl.styles import Alignment, Font
 DEDUCTION_CATEGORIES = {
     "absences": {
         "nested_key": "absence",
-        "fields": ["date"],
-        "title": "Absences",
+        "fields": ["التاريخ"],
+        "title": "الغيابات",
     },
     "permissions": {
         "nested_key": "permission",
-        "fields": ["start", "end", "duration_minutes"],
-        "title": "Permissions",
+        "fields": ["الذهاب", "العودة", "مدة الوقت"],
+        "title": "الاذونات",
     },
     "latencies": {
         "nested_key": "latency",
-        "fields": ["date", "checkin_time", "minutes"],
-        "title": "Latencies",
+        "fields": ["التاريخ", "وقت الحضور", "الدقائق"],
+        "title": "التأخيرات",
     },
     "early_leaves": {
         "nested_key": "early_leave",
-        "fields": ["date", "checkout_time", "minutes"],
-        "title": "Early Leaves",
+        "fields": ["التاريخ", "وقت الاانصراف", "minutes"],
+        "title": "مغادرة مبكره",
     },
     "need_reviews": {
         "nested_key": "need_review",
-        "fields": ["date", "reason"],
-        "title": "Need Reviews",
+        "fields": ["التاريخ", "السبب"],
+        "title": "تحتاج مراجعه",
     },
 }
 
 EDITABLE_DEDUCTION_COLUMNS = ["deduction_points", "spin_deduction", "notes_edit"]
-EDITABLE_DEDUCTION_HEADERS = ["Deduction Points", "Spin Deduction", "Notes"]
+EDITABLE_DEDUCTION_HEADERS = ["نقاط الخصم", "الخصم من الاساسي", "ملاحظات"]
 
 # Categories that are simple flat lists the user can add/delete rows from.
 MANUAL_CATEGORIES = {
-    "manually_additions": "Manual Additions",
-    "manually_deductions": "Manual Deductions",
+    "manually_additions": "اضافة زيادة",
+    "manually_deductions": "اضافة خصم",
 }
 MANUAL_COLUMNS = ["value", "points", "note"]
-MANUAL_HEADERS = ["Value", "Points", "Note"]
+MANUAL_HEADERS = ["الخصم من الاساسي", "نقاط الخصم", "ملاحظات"]
 
 # ---------------------------------------------------------------------------
 # Working-date-range defaults / helpers
 # ---------------------------------------------------------------------------
-
-DEFAULT_START_DATE_STR = "2026-08-01"
-DEFAULT_END_DATE_STR = "2026-08-31"
-DEFAULT_START_QDATE = QDate(2026, 8, 1)
-DEFAULT_END_QDATE = QDate(2026, 8, 31)
-
 
 def _coerce_to_date(value):
     """Best-effort conversion of a stored date-ish value to a datetime.date."""
@@ -285,7 +279,7 @@ def _json_default(obj):
 # Calculations
 # ---------------------------------------------------------------------------
 
-def compute_employee_metrics(emp: dict) -> dict:
+def compute_employee_metrics(emp: dict,passed_range_days) -> dict:
     """Compute all derived payroll values for a single employee dict."""
 
     def sum_spin_deduction():
@@ -327,7 +321,7 @@ def compute_employee_metrics(emp: dict) -> dict:
     # quality_base replaces the old flat "1000": both the base quality you'd
     # get with zero net deduction points, and the cap on quality, now scale
     # with the employee's working-date range.
-    quality_base = (range_work_days / 31) * 1000
+    quality_base = (range_work_days / passed_range_days) * 1000
     quality = quality_base - ((points_minus - points_plus) * 100)
 
     if quality > quality_base:
@@ -337,7 +331,7 @@ def compute_employee_metrics(emp: dict) -> dict:
     if quality_cancelled:
         quality = 0
 
-    fixed_salary = (range_work_days / 31) * 3000
+    fixed_salary = (range_work_days / passed_range_days) * 3000
     target_bonus = emp.get("target_bonus", 0) or 0
 
     final = fixed_salary + target_bonus + quality + main_plus - main_minus
@@ -487,17 +481,32 @@ def _note_for_manual_deduction(entry: dict) -> str:
 
 
 _NOTE_BUILDERS = {
-    "absences": _note_for_absence,
-    "permissions": _note_for_permission,
-    "latencies": _note_for_latency,
-    "early_leaves": _note_for_early_leave,
-    "need_reviews": _note_for_need_review,
-    "manually_additions": _note_for_manual_addition,
-    "manually_deductions": _note_for_manual_deduction,
+    "الغيابات": _note_for_absence,
+    "الاذونات": _note_for_permission,
+    "التأخيرات": _note_for_latency,
+    "المغادرة المبكرة": _note_for_early_leave,
+    "تحتاج مراجعه": _note_for_need_review,
+    "اضافة زيادة": _note_for_manual_addition,
+    "اضافة خصم": _note_for_manual_deduction,
 }
 
 
 def build_employee_notes(emp: dict) -> str:
+    print("first")
+    print(_NOTE_BUILDERS.items())
+    print("second")
+    print(emp)
+    key_map = {
+        "absences": "الغيابات",
+        "permissions": "الاذونات",
+        "latencies": "التأخيرات",
+        "early_leaves": "المغادرة المبكرة",
+        "need_reviews": "تحتاج مراجعه",
+        "manually_additions": "اضافة زيادة",
+        "manually_deductions": "اضافة خصم",
+    }
+    emp_with_arabic_keys = {key_map[k]: v for k, v in emp.items() if k in key_map}
+
     """
     Concatenates one readable Arabic line per record (absences, permissions,
     latencies, early_leaves, need_reviews, manual additions/deductions),
@@ -512,7 +521,7 @@ def build_employee_notes(emp: dict) -> str:
     lines = []
 
     for cat_key, builder in _NOTE_BUILDERS.items():
-        for entry in emp.get(cat_key, []):
+        for entry in emp_with_arabic_keys.get(cat_key, []):
             line = builder(entry)
             if line:
                 lines.append(line)
@@ -551,14 +560,14 @@ class DetailsDialog(QDialog):
     needed, as it's opened modally).
     """
 
-    def __init__(self, emp_name: str, emp_data: dict, parent=None):
+    def __init__(self, emp_name: str, emp_data: dict, range_days,parent=None):
         super().__init__(parent)
         self.emp_name = emp_name
         self.emp_data = emp_data
 
         self.setWindowTitle(f"Details - {emp_name}")
         self.resize(900, 600)
-
+        self.range_days=range_days
         self.deduction_tables: dict[str, QTableWidget] = {}
         self.manual_tables: dict[str, QTableWidget] = {}
 
@@ -591,15 +600,15 @@ class DetailsDialog(QDialog):
     # -- summary -----------------------------------------------------------
 
     def _refresh_summary(self):
-        metrics = compute_employee_metrics(self.emp_data)
+        metrics = compute_employee_metrics(self.emp_data,self.range_days)
         self.summary_label.setText(
             f"Range: {self.emp_data.get('start_working_date', '')} \u2192 "
             f"{self.emp_data.get('end_working_date', '')} "
             f"({metrics['range_work_days']} days)   |   "
-            f"Fixed Salary: {metrics['fixed_salary']:.2f}   |   "
-            f"Main +: {metrics['main_plus']}   |   Main -: {metrics['main_minus']}   |   "
-            f"Points +: {metrics['points_plus']}   |   Points -: {metrics['points_minus']}   |   "
-            f"Quality: {metrics['quality']:.2f}   |   Final: {metrics['final']:.2f}"
+            f"الاساسي: {metrics['fixed_salary']:.2f}   |   "
+            f"زيادات للاساسي: {metrics['main_plus']}   |   خصم من الاساسي: {metrics['main_minus']}   |   "
+            f"اضافات نقاط: {metrics['points_plus']}   |   خصم نقاط: {metrics['points_minus']}   |   "
+            f"الكواليتي: {metrics['quality']:.2f}   |   المرتب: {metrics['final']:.2f}"
         )
 
     # -- deduction-style tabs (absences, permissions, latencies, ...) -----
@@ -694,7 +703,7 @@ class DetailsDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         add_btn = QPushButton(f"Add {title[:-1] if title.endswith('s') else title}")
-        delete_btn = QPushButton("Delete Selected")
+        delete_btn = QPushButton("مسح المحدد")
         add_btn.clicked.connect(partial(self._add_manual_row, cat_key=cat_key))
         delete_btn.clicked.connect(partial(self._delete_manual_rows, cat_key=cat_key))
         btn_layout.addWidget(add_btn)
@@ -761,20 +770,20 @@ class FinalDialog(QDialog):
     """Main payroll review dialog listing every employee."""
 
     COLUMNS = [
-        "Employee",
-        "Achieved/Target",
-        "Target Bonus",
-        "Start Working Date",
-        "End Working Date",
-        "Main +",
-        "Main -",
-        "Points +",
-        "Points -",
-        "Quality",
-        "Cancel Quality",
-        "New Employee",
-        "Final",
-        "Details",
+        "الموظف",
+        "اكتيف/تارجت",
+        "الكوميشن",
+        "تاريخ بداية العمل",
+        "تاريخ نهاية العمل",
+        "الاضافات للاساسي",
+        "خصم من الاساسي",
+        "اضافات النقاط",
+        "خصومات النقاط",
+        "الكوالتي",
+        "الغاء الكوالتي",
+        "الموظف جديد؟",
+        "المرتب",
+        "تفاصيل",
     ]
 
     # Column indices, named for readability.
@@ -793,11 +802,20 @@ class FinalDialog(QDialog):
     COL_FINAL = 12
     COL_DETAILS = 13
 
-    def __init__(self, parent=None):
+    def __init__(self,passed_start_date,passed_end_date, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Payroll Review")
         self.resize(1350, 700)
-
+        self.passed_start_date=passed_start_date
+        self.passed_end_date=passed_end_date
+        # Parse the string into QDate
+        start_parts = passed_start_date.split("-")
+        start_year, start_month, start_day = map(int, start_parts)
+        self.start_qdate = QDate(start_year, start_month, start_day)
+        end_parts = passed_end_date.split("-")
+        end_year, end_month, end_day = map(int, end_parts)
+        self.end_qdate = QDate(end_year, end_month, end_day)
+        self.range_days = self.start_qdate.daysTo(self.end_qdate)+1 # 01-08-2026 to 31-08-2026 will return 31
         # emp_name -> current row index, kept up to date by refresh_table()
         # so date-edit callbacks can find "their" row without needing to
         # rebuild/search the whole table.
@@ -814,7 +832,7 @@ class FinalDialog(QDialog):
         layout.addWidget(self.table)
 
         btn_layout = QHBoxLayout()
-        self.export_pdf_btn = QPushButton("Export PDF")
+        self.export_pdf_btn = QPushButton("convert Excel to PDFs")
         self.export_excel_btn = QPushButton("Export Excel")
         self.load_btn = QPushButton("Load Data")
         self.save_btn = QPushButton("Save Data")
@@ -845,11 +863,11 @@ class FinalDialog(QDialog):
 
             # Seed default working-date range the first time we see this
             # employee, mirroring it straight into attendance_result_dict.
-            emp_data.setdefault("start_working_date", DEFAULT_START_DATE_STR)
-            emp_data.setdefault("end_working_date", DEFAULT_END_DATE_STR)
+            emp_data.setdefault("start_working_date", self.passed_start_date)
+            emp_data.setdefault("end_working_date", self.passed_end_date)
             emp_data.setdefault("is_new_employee", False)
 
-            metrics = compute_employee_metrics(emp_data)
+            metrics = compute_employee_metrics(emp_data,self.range_days)
 
             achieved = emp_data.get("achieved", 0)
             target = emp_data.get("target", 0)
@@ -875,14 +893,14 @@ class FinalDialog(QDialog):
             start_edit = QDateEdit()
             start_edit.setCalendarPopup(True)
             start_edit.setDisplayFormat("yyyy-MM-dd")
-            start_edit.setDate(_str_to_qdate(emp_data["start_working_date"], DEFAULT_START_QDATE))
+            start_edit.setDate(_str_to_qdate(emp_data["start_working_date"], self.start_qdate))
             start_edit.dateChanged.connect(partial(self._on_start_date_changed, emp_name=emp_name))
             self.table.setCellWidget(row, self.COL_START_DATE, start_edit)
 
             end_edit = QDateEdit()
             end_edit.setCalendarPopup(True)
             end_edit.setDisplayFormat("yyyy-MM-dd")
-            end_edit.setDate(_str_to_qdate(emp_data["end_working_date"], DEFAULT_END_QDATE))
+            end_edit.setDate(_str_to_qdate(emp_data["end_working_date"], self.end_qdate))
             end_edit.dateChanged.connect(partial(self._on_end_date_changed, emp_name=emp_name))
             self.table.setCellWidget(row, self.COL_END_DATE, end_edit)
 
@@ -977,7 +995,7 @@ class FinalDialog(QDialog):
             self._update_row_metrics(row, emp_data)
 
     def _update_row_metrics(self, row: int, emp_data: dict):
-        metrics = compute_employee_metrics(emp_data)
+        metrics = compute_employee_metrics(emp_data,self.range_days)
         achieved = emp_data.get("achieved", 0)
         target = emp_data.get("target", 0)
 
@@ -1004,7 +1022,7 @@ class FinalDialog(QDialog):
         if emp_data is None:
             return
 
-        dialog = DetailsDialog(emp_name, emp_data, self)
+        dialog = DetailsDialog(emp_name, emp_data,self.range_days,self)
         dialog.exec()
 
         # attendance_result_dict was mutated in place while the popup was
@@ -1016,8 +1034,7 @@ class FinalDialog(QDialog):
     # -- bottom action buttons (stubs) -----------------------------------
 
     def export_pdf(self):
-        """TODO: implement PDF export."""
-        pass
+        generate_reports_from_gui()
 
     def export_excel(self):
         path, _ = QFileDialog.getSaveFileName(
@@ -1027,18 +1044,18 @@ class FinalDialog(QDialog):
             return
 
         headers = [
-            "Employee Name",
+            'اسم الايجنت',
             "Start Working Date",
             "End Working Date",
-            "Main",
-            "Main After Deductions/Additions",
-            "Quality",
-            "Quality After Deductions/Additions",
-            "Target",
-            "Achieved",
-            "Target Bonus",
-            "Final Salary",
-            "Notes",
+            'الاساسي',
+            'الاساسي بعد الخصم',
+            'الكوالتي',
+            'الكوالتي بعد خصم النقاط',
+            'التارجت',
+            'اكتيف',
+            'الكوميشن',
+            'المرتب',
+            'ملاحظات'
         ]
 
         wb = Workbook()
@@ -1054,7 +1071,7 @@ class FinalDialog(QDialog):
             cell.font = header_font
 
         for emp_name, emp_data in attendance_result_dict.items():
-            metrics = compute_employee_metrics(emp_data)
+            metrics = compute_employee_metrics(emp_data,self.range_days)
 
             main = metrics["fixed_salary"]
             main_after = main + metrics["main_plus"] - metrics["main_minus"]

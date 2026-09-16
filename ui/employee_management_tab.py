@@ -35,31 +35,31 @@ class EmployeeManagementTab(QWidget):
         # ----- Table (read-only, selection triggers edit) -----
         self.table = QTableWidget()
         self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Fingerprint Name", "Target Sheet Name", "Display Name"])
+        self.table.setHorizontalHeaderLabels(["الاسم في شيت البصمة", "الاسم في شيت التارجت", "الموظف"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.setSelectionMode(QTableWidget.SingleSelection)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.clicked.connect(self._on_row_selected)
 
-        main_layout.addWidget(QLabel("Current Mappings:"))
+        main_layout.addWidget(QLabel("الموظفين الحاليين:"))
         main_layout.addWidget(self.table)
 
         # ----- Input Form -----
-        form_group = QGroupBox("Add / Edit Mapping")
+        form_group = QGroupBox("")
         form_layout = QFormLayout(form_group)
 
         self.fingerprint_input = QLineEdit()
         self.fingerprint_input.setPlaceholderText("e.g. noor")
-        form_layout.addRow("Fingerprint Name:", self.fingerprint_input)
+        form_layout.addRow("الاسم في شيت البصمة:", self.fingerprint_input)
 
         self.target_input = QLineEdit()
         self.target_input.setPlaceholderText("e.g. nour")
-        form_layout.addRow("Target Sheet Name:", self.target_input)
+        form_layout.addRow("الاسم في شيت التارجت:", self.target_input)
 
         self.display_input = QLineEdit()
         self.display_input.setPlaceholderText("e.g. Noor Ahmed")
-        form_layout.addRow("Display Name:", self.display_input)
+        form_layout.addRow("الموظف:", self.display_input)
 
         main_layout.addWidget(form_group)
 

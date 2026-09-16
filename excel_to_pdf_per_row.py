@@ -14,6 +14,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 import arabic_reshaper
 from bidi.algorithm import get_display
 
+from PySide6.QtWidgets import QFileDialog, QWidget, QMessageBox
+
 # ---------- Configuration ----------
 FONT_PATH = 'C:/Windows/Fonts/ARIALUNI.TTF'   # or your Arabic font
 COLUMNS = [
@@ -217,18 +219,26 @@ def generate_reports(excel_path, output_dir=OUTPUT_DIR):
 
     print(f"\nAll reports generated in '{output_dir}'")
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        excel_file = sys.argv[1]
-    else:
-        excel_file = input("Enter path to Excel file: ").strip()
-        if not excel_file:
-            print("No file provided. Exiting.")
-            sys.exit(1)
+def generate_reports_from_gui(parent: QWidget | None = None, excel_path: str | None = None, output_dir: str = OUTPUT_DIR):
+    """
+    Wrapper to call generate_reports. If excel_path is None, show a QFileDialog to pick the file.
+    parent: optional QWidget to parent the file dialog (use self from your MainWindow).
+    """
+    # If caller provided a path, use it directly
+    if excel_path:
+        generate_reports(excel_path, output_dir)
+        return
 
-    if len(sys.argv) > 2:
-        out_dir = sys.argv[2]
-    else:
-        out_dir = OUTPUT_DIR
+    # Otherwise ask the user to choose a file
+    file_path, _ = QFileDialog.getOpenFileName(
+        parent,
+        "Select Excel file for reports",
+        "",
+        "Excel Files (*.xlsx *.xls)"
+    )
+    if not file_path:
+        # user cancelled; optionally show a message or just return
+        # QMessageBox.information(parent, "Cancelled", "No file selected.")  # optional
+        return
 
-    generate_reports(excel_file, out_dir)
+    generate_reports(file_path, output_dir)

@@ -1,0 +1,1883 @@
+{
+  "nor ahmed": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96 جنيه ",
+        "absence": {
+          "date": "2026-08-19"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-12",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-17",
+          "checkin_time": "08:43",
+          "minutes": 3
+        }
+      },
+      {
+        "deduction_points": 0.5,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير نصف ساعه خصم نصف نقطة",
+        "latency": {
+          "date": "2026-08-20",
+          "checkin_time": "08:53",
+          "minutes": 13
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-26",
+          "checkin_time": "08:43",
+          "minutes": 3
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-27",
+          "checkin_time": "08:49",
+          "minutes": 9
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-31",
+          "checkin_time": "08:46",
+          "minutes": 6
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-03",
+          "reason": "Consecutive 'حضور' at 08:30 and 13:10"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-05",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-08",
+          "reason": "Consecutive 'إنصراف' at 17:31 and 17:39"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-15",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 0,
+        "points": 1,
+        "note": " خصم نقطة creation fake في الشيت الاساسي "
+      },
+      {
+        "value": 48,
+        "points": 0,
+        "note": "يوم 3- 8 اذن نص يوم خصم 48 جنيه"
+      },
+      {
+        "value": 48,
+        "points": 0,
+        "note": "يوم 3-  8 اذن نص يوم خصم 48 جنيه"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 1200.0,
+    "target_bonus_explain": "Achieved 75.7% of target (60%–<80%) → 2000 × 0.6 = 1200",
+    "zero_accepts_deductions": 0.0,
+    "target": 70.0,
+    "achieved": 53.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "nadaf": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-31",
+          "reason": "Consecutive 'إنصراف' at 17:32 and 17:38"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Target is zero or invalid → 0",
+    "zero_accepts_deductions": 0.25,
+    "target": NaN,
+    "achieved": 2.0,
+    "start_working_date": "2026-08-22",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": true
+  },
+  "fatmaabdelrahman": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-23",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-31",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "alaamahmoud": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96 جنيه",
+        "absence": {
+          "date": "2026-08-23"
+        }
+      },
+      {
+        "deduction_points": 0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-24"
+        }
+      },
+      {
+        "deduction_points": 0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-25"
+        }
+      },
+      {
+        "deduction_points": 0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-26"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-03",
+          "checkin_time": "08:53",
+          "minutes": 13
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-10",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-18",
+          "checkin_time": "08:46",
+          "minutes": 6
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-29",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-16",
+          "reason": "Consecutive 'إنصراف' at 17:34 and 17:46"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 1600.0,
+    "target_bonus_explain": "Achieved 85.0% of target (80%–<100%) → 2000 × 0.8 = 1600",
+    "zero_accepts_deductions": 0.25,
+    "target": 40.0,
+    "achieved": 34.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "hayamayman": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-22"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-23"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 1200.0,
+    "target_bonus_explain": "Achieved 64.4% of target (60%–<80%) → 2000 × 0.6 = 1200",
+    "zero_accepts_deductions": 0.0,
+    "target": 45.0,
+    "achieved": 29.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "bsantmohammed": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-11"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-12"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-13"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-15"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-16"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-17"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-18"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-19"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "absence": {
+          "date": "2026-08-20"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-27",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 55.0% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": 40.0,
+    "achieved": 22.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "mennaahmed": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-01"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-02"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-16",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير نصف ساعه خصم نصف نقطة",
+        "latency": {
+          "date": "2026-08-18",
+          "checkin_time": "09:18",
+          "minutes": 38
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-19",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 1000,
+        "points": 0,
+        "note": "سلفه 1000 جنيه يوم 23 - 8 "
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 50.0% of target (<60%) → 0",
+    "zero_accepts_deductions": 1.0,
+    "target": 40.0,
+    "achieved": 20.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "ayaahmed": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96 جنيه",
+        "absence": {
+          "date": "2026-08-26"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "خصم 96 جنيه تاخير نص يوم بدون اذن",
+        "latency": {
+          "date": "2026-08-01",
+          "checkin_time": "12:07",
+          "minutes": 207
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-02",
+          "checkin_time": "08:50",
+          "minutes": 10
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-03",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-16",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-17",
+          "checkin_time": "08:43",
+          "minutes": 3
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-09",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-23",
+          "reason": "Consecutive 'حضور' at 08:31 and 17:31"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 48,
+        "points": 0,
+        "note": "خصم 48 جنيه اذن نصف يوم تاريخ 22 - 8"
+      },
+      {
+        "value": 0,
+        "points": 1,
+        "note": "خصم نقطة عدم اتباع التعليمات المكالمة بتاريخ 19 - 8"
+      },
+      {
+        "value": 500,
+        "points": 0,
+        "note": "سلفة 500 جنيه بتاريخ 27 - 8"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 35.0% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.75,
+    "target": 40.0,
+    "achieved": 14.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "75": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-01"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب باذن خصم 96",
+        "absence": {
+          "date": "2026-08-05"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-02",
+          "checkin_time": "08:50",
+          "minutes": 10
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-03",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-16",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-17",
+          "checkin_time": "08:43",
+          "minutes": 3
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-19",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-26",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-13",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 55.0% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.25,
+    "target": 40.0,
+    "achieved": 22.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "84": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-08"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-02",
+          "reason": "Consecutive 'إنصراف' at 17:32 and 17:40"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-06",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-13",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-18",
+          "reason": "Consecutive 'إنصراف' at 13:00 and 15:00 | Consecutive 'إنصراف' at 15:00 and 17:30"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-29",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "nadamohammed": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-04"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-18"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-29"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-30"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-09",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-16",
+          "reason": "Consecutive 'حضور' at 08:33 and 17:31"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 450,
+        "points": 0,
+        "note": "سلفة بتاريخ 27 - 8 قدرها 450 جنيه"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 47.5% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.75,
+    "target": 40.0,
+    "achieved": 19.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "maiyaser": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-02"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-19"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-20"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-22"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-29"
+        }
+      },
+      {
+        "deduction_points": 1,
+        "spin_deduction": 192,
+        "notes_edit": "غياب بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-30"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.5,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير نصف ساعه خصم نصف نقطه",
+        "latency": {
+          "date": "2026-08-17",
+          "checkin_time": "09:01",
+          "minutes": 21
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 48,
+        "points": 0,
+        "note": "اذن نصف يوم خصم 48 جنيه"
+      },
+      {
+        "value": 0,
+        "points": 2,
+        "note": "خصم الكواليتي بالكامل لتخطي ايام الغياب"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 57.5% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.5,
+    "target": 40.0,
+    "achieved": 23.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "entesarmahmoud": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "maysaa": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "salwahassan": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-10"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-22"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-29"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-18",
+          "checkin_time": "12:44",
+          "minutes": 244
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 96,
+        "points": 0,
+        "note": "غياب نصف يوم بتاريخ 18 - 8 مع تعدي حد الغياب المسموح خصم 96 جنيه"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "habibaalaa": {
+    "absences": [
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-02"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 و نقطتين",
+        "absence": {
+          "date": "2026-08-08"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-04",
+          "checkin_time": "08:47",
+          "minutes": 7
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-14",
+    "is_new_employee": false
+  },
+  "shahendaalaa": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-10"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.5,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير نصف ساعه خصم نصف نقطة",
+        "latency": {
+          "date": "2026-08-05",
+          "checkin_time": "09:03",
+          "minutes": 23
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه ",
+        "latency": {
+          "date": "2026-08-06",
+          "checkin_time": "08:46",
+          "minutes": 6
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-09",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-12",
+          "checkin_time": "08:56",
+          "minutes": 16
+        }
+      },
+      {
+        "deduction_points": 1.5,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ساعه ونصف خصم نقطه ونصف",
+        "latency": {
+          "date": "2026-08-13",
+          "checkin_time": "10:14",
+          "minutes": 94
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-16",
+          "checkin_time": "08:44",
+          "minutes": 4
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-18",
+          "checkin_time": "08:46",
+          "minutes": 6
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-19",
+          "checkin_time": "08:44",
+          "minutes": 4
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-22",
+          "checkin_time": "08:55",
+          "minutes": 15
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-25",
+          "checkin_time": "08:51",
+          "minutes": 11
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-29",
+          "checkin_time": "08:56",
+          "minutes": 16
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-31",
+          "checkin_time": "08:50",
+          "minutes": 10
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-09-01",
+          "checkin_time": "08:53",
+          "minutes": 13
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-13",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 17.5% of target (<60%) → 0",
+    "zero_accepts_deductions": 2.5,
+    "target": 40.0,
+    "achieved": 7.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "nourmohsen": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96 جنيه",
+        "absence": {
+          "date": "2026-08-29"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطة",
+        "latency": {
+          "date": "2026-08-04",
+          "checkin_time": "08:50",
+          "minutes": 10
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-09",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-25",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-13",
+          "reason": "Consecutive 'حضور' at 08:31 and 15:01"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 32.5% of target (<60%) → 0",
+    "zero_accepts_deductions": 1.75,
+    "target": 40.0,
+    "achieved": 13.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "gehad": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-04",
+          "checkin_time": "08:50",
+          "minutes": 10
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-09",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-25",
+          "checkin_time": "08:45",
+          "minutes": 5
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 0,
+        "points": 1,
+        "note": "fake offer ( 15 - 8 - 2026 )"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 45.0% of target (<60%) → 0",
+    "zero_accepts_deductions": 1.0,
+    "target": 40.0,
+    "achieved": 18.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "shahdfarrag": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96",
+        "absence": {
+          "date": "2026-08-01"
+        }
+      },
+      {
+        "deduction_points": 2,
+        "spin_deduction": 192,
+        "notes_edit": "غياب يوم بدون اذن خصم 192 ونقطتين",
+        "absence": {
+          "date": "2026-08-05"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-02",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-04",
+          "checkin_time": "08:47",
+          "minutes": 7
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Active count nan outside ranges → 0",
+    "zero_accepts_deductions": 0.0,
+    "target": null,
+    "achieved": NaN,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-09",
+    "is_new_employee": false
+  },
+  "malakmahmoud": {
+    "absences": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 96,
+        "notes_edit": "غياب يوم باذن خصم 96 جنيه",
+        "absence": {
+          "date": "2026-08-10"
+        }
+      }
+    ],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-05",
+          "checkin_time": "08:44",
+          "minutes": 4
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-06",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-08",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-09",
+          "checkin_time": "08:41",
+          "minutes": 1
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-13",
+          "checkin_time": "08:48",
+          "minutes": 8
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-15",
+          "checkin_time": "08:47",
+          "minutes": 7
+        }
+      },
+      {
+        "deduction_points": 0.5,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير نصف ساعه خصم نصف نقطه",
+        "latency": {
+          "date": "2026-08-16",
+          "checkin_time": "08:58",
+          "minutes": 18
+        }
+      },
+      {
+        "deduction_points": 0.25,
+        "spin_deduction": 0,
+        "notes_edit": "تاخير ربع ساعه خصم ربع نقطه",
+        "latency": {
+          "date": "2026-08-25",
+          "checkin_time": "08:44",
+          "minutes": 4
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-26",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-31",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-09-01",
+          "checkin_time": "08:42",
+          "minutes": 2
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-25",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [
+      {
+        "value": 0,
+        "points": 1,
+        "note": "عدم متابعه مع العميل خصم نقطة بتاريخ 19 - 8"
+      }
+    ],
+    "fixed_salary": 3000,
+    "target_bonus": 1200.0,
+    "target_bonus_explain": "Achieved 77.1% of target (60%–<80%) → 2000 × 0.6 = 1200",
+    "zero_accepts_deductions": 0.75,
+    "target": 35.0,
+    "achieved": 27.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "sarafathy": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [],
+    "early_leaves": [],
+    "need_reviews": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-15",
+          "reason": ""
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-08-31",
+          "reason": "Consecutive 'حضور' at 13:11 and 17:37"
+        }
+      },
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "need_review": {
+          "date": "2026-09-01",
+          "reason": ""
+        }
+      }
+    ],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 0,
+    "target_bonus_explain": "Achieved 37.1% of target (<60%) → 0",
+    "zero_accepts_deductions": 0.25,
+    "target": 35.0,
+    "achieved": 13.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  },
+  "marwamahmoud": {
+    "absences": [],
+    "permissions": [],
+    "latencies": [
+      {
+        "deduction_points": 0.0,
+        "spin_deduction": 0,
+        "notes_edit": "",
+        "latency": {
+          "date": "2026-08-18",
+          "checkin_time": "08:43",
+          "minutes": 3
+        }
+      }
+    ],
+    "early_leaves": [],
+    "need_reviews": [],
+    "manually_additions": [],
+    "manually_deductions": [],
+    "fixed_salary": 3000,
+    "target_bonus": 1200.0,
+    "target_bonus_explain": "Achieved 71.4% of target (60%–<80%) → 2000 × 0.6 = 1200",
+    "zero_accepts_deductions": 0.25,
+    "target": 35.0,
+    "achieved": 25.0,
+    "start_working_date": "2026-08-01",
+    "end_working_date": "2026-08-31",
+    "is_new_employee": false
+  }
+}

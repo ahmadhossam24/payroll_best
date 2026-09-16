@@ -1,12 +1,4 @@
 {
-    "lobna": {
-        "target_sheet_name": "lobna",
-        "display_name": "lobna"
-    },
-    "asmaamagdy": {
-        "target_sheet_name": "asmaa",
-        "display_name": "asmaamagdy"
-    },
     "ayaahmed": {
         "target_sheet_name": "aya ahmed",
         "display_name": "ayaahmed"
@@ -15,41 +7,13 @@
         "target_sheet_name": "menna",
         "display_name": "mennaahmed"
     },
-    "shahd": {
-        "target_sheet_name": "shahd",
-        "display_name": "shahd"
-    },
-    "walaamaged": {
-        "target_sheet_name": "walaa",
-        "display_name": "walaamaged"
-    },
-    "dinamohammed": {
-        "target_sheet_name": "dina",
-        "display_name": "dinamohammed"
-    },
-    "nadamohammed": {
-        "target_sheet_name": "nada mohamed",
-        "display_name": "nadamohammed"
-    },
     "maiyaser": {
         "target_sheet_name": "mai",
         "display_name": "maiyaser"
     },
-    "nourgamal": {
-        "target_sheet_name": "nour gamal",
-        "display_name": "nourgamal"
-    },
-    "rehabhassan": {
-        "target_sheet_name": "rehab",
-        "display_name": "rehabhassan"
-    },
     "75": {
         "target_sheet_name": "amira",
         "display_name": "75"
-    },
-    "77": {
-        "target_sheet_name": "asmaa vodafone",
-        "display_name": "77"
     },
     "nor ahmed": {
         "target_sheet_name": "nour ahmed",
@@ -58,10 +22,6 @@
     "bsantmohammed": {
         "target_sheet_name": "bsaant mohamed",
         "display_name": "بسنت محمد"
-    },
-    "basant": {
-        "target_sheet_name": "basant tharwat",
-        "display_name": "بسنت ثروت"
     },
     "hayamayman": {
         "target_sheet_name": "hayam",
@@ -118,5 +78,17 @@
     "entesarmahmoud": {
         "target_sheet_name": "انتصار",
         "display_name": "entesarmahmoud"
+    },
+    "nadamohammed": {
+        "target_sheet_name": "nada m",
+        "display_name": "nadamohammed"
+    },
+    "nadaf": {
+        "target_sheet_name": "nada fathy",
+        "display_name": "ندى فتحي"
+    },
+    "shahdfarrag": {
+        "target_sheet_name": "شهد",
+        "display_name": "شهد فراج"
     }
 }

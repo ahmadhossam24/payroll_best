@@ -25,7 +25,7 @@ class AttendanceReviewDialog(QDialog):
         self.review_widgets = {}
         self.attendance_data = attendance_data
 
-        self.setWindowTitle("Attendance Review")
+        self.setWindowTitle("مراجعة الحضور")
         self.resize(1000, 700)
 
         main_layout = QVBoxLayout(self)
@@ -152,7 +152,7 @@ class AttendanceReviewDialog(QDialog):
     def create_absences_group(self, absences, employee_name):
 
         group = QGroupBox(
-            f"Absences ({len(absences)})"
+            f"الغيابات ({len(absences)})"
         )
 
         form = QFormLayout(group)
@@ -168,7 +168,7 @@ class AttendanceReviewDialog(QDialog):
     def create_permissions_group(self, permissions, employee_name):
 
         group = QGroupBox(
-            f"Permissions ({len(permissions)})"
+            f"الاذونات ({len(permissions)})"
         )
 
         form = QFormLayout(group)
@@ -184,7 +184,7 @@ class AttendanceReviewDialog(QDialog):
     def create_latencies_group(self, latencies, employee_name):
 
         group = QGroupBox(
-            f"Latencies ({len(latencies)})"
+            f"التأخيرات ({len(latencies)})"
         )
 
         form = QFormLayout(group)
@@ -200,7 +200,7 @@ class AttendanceReviewDialog(QDialog):
     def create_early_leaves_group(self, early_leaves, employee_name):
 
         group = QGroupBox(
-            f"Early Leaves ({len(early_leaves)})"
+            f"الانصراف المبكر ({len(early_leaves)})"
         )
 
         form = QFormLayout(group)
@@ -216,7 +216,7 @@ class AttendanceReviewDialog(QDialog):
     def create_needs_review_group(self, reviews, employee_name):
 
         group = QGroupBox(
-            f"Needs Review ({len(reviews)})"
+            f"تحتاج مراجعه ({len(reviews)})"
         )
 
         form = QFormLayout(group)

@@ -197,7 +197,7 @@ class ManualAddDedDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("Manual Additions / Deductions")
+        self.setWindowTitle("اضافة خصم او زيادة")
         self.resize(700, 500)
 
         self.adjustments = []
@@ -213,8 +213,8 @@ class ManualAddDedDialog(QDialog):
 
         self.type_combo = QComboBox()
         self.type_combo.addItems([
-            "Addition",
-            "Deduction"
+            "اضف زيادة",
+            "اضف خصم"
         ])
 
         self.value_spin = QSpinBox()
@@ -228,21 +228,21 @@ class ManualAddDedDialog(QDialog):
 
         self.note_edit = QLineEdit()
 
-        self.btn_add = QPushButton("Add")
+        self.btn_add = QPushButton("اضافة")
 
-        row.addWidget(QLabel("Employee"))
+        row.addWidget(QLabel("الموظف"))
         row.addWidget(self.employee_combo)
 
-        row.addWidget(QLabel("Type"))
+        row.addWidget(QLabel("النوع"))
         row.addWidget(self.type_combo)
 
-        row.addWidget(QLabel("Value"))
+        row.addWidget(QLabel("قيمة الزيادة او الخصم من الاساسي"))
         row.addWidget(self.value_spin)
 
-        row.addWidget(QLabel("Points"))
+        row.addWidget(QLabel("عدد نقاط الخصم"))
         row.addWidget(self.points_combo)
 
-        row.addWidget(QLabel("Note"))
+        row.addWidget(QLabel("ملاحظات"))
         row.addWidget(self.note_edit)
 
         row.addWidget(self.btn_add)
@@ -253,7 +253,7 @@ class ManualAddDedDialog(QDialog):
         layout.addWidget(self.list_widget)
 
         self.btn_delete = QPushButton(
-            "Delete Selected"
+            "مسح"
         )
 
         layout.addWidget(self.btn_delete)
