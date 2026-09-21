@@ -242,3 +242,4 @@ def generate_reports_from_gui(parent: QWidget | None = None, excel_path: str | N
         return
 
     generate_reports(file_path, output_dir)
+    QMessageBox.information(parent, "Convertion Complete", "pdfs generated in reports folder")  # optional

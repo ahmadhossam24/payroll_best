@@ -32,7 +32,7 @@ def update_data_dict_with_payroll(target_file):
         # Skip title row (row 0 is assumed to be header)
         for _, row in df.iloc[0:].iterrows():
             name = str(row.iloc[0]).strip().lower()
-            print(name)
+            # print(name)
             # Determine which sheet we are processing
             if sheet_index == 0:  # First sheet: target-based bonus
                 target = safe_float(row.iloc[1])
@@ -61,7 +61,7 @@ def update_data_dict_with_payroll(target_file):
             else:  # Second sheet (and any others): hard-coded ranges
                 # Target is ignored; achieved is the active count
                 achieved = safe_float(row.iloc[2])
-                print(f"{name} achieved",achieved)
+                # print(f"{name} achieved",achieved)
                 zero_accepts = safe_float(row.iloc[3]) if pd.notna(row.iloc[3]) else 0.0
 
                 # Determine bonus based on active count ranges

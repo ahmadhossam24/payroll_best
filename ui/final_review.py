@@ -124,7 +124,7 @@ DEDUCTION_CATEGORIES = {
     },
     "early_leaves": {
         "nested_key": "early_leave",
-        "fields": ["التاريخ", "وقت الاانصراف", "minutes"],
+        "fields": ["التاريخ", "وقت الانصراف", "الدقائق"],
         "title": "مغادرة مبكره",
     },
     "need_reviews": {
@@ -199,7 +199,7 @@ def filter_absences_in_range(emp_data: dict, start: date, end: date) -> bool:
     kept = []
     changed = False
     for entry in absences:
-        nested = entry.get("absence", {}) or {}
+        nested = entry.get("absence", {}) or {} 
         entry_date = _coerce_to_date(nested.get("date"))
         if entry_date is None:
             kept.append(entry)
@@ -361,8 +361,12 @@ def _deduction_suffix(deduction_points, spin_deduction, notes_edit) -> str:
     absences / permissions / latencies / early_leaves / need_reviews.
     Any part that is 0 / "" / None is skipped entirely.
     """
+    print("1")
+    print(deduction_points, spin_deduction, notes_edit)
     dp_empty = _is_empty(deduction_points)
     sd_empty = _is_empty(spin_deduction)
+    print(dp_empty,sd_empty)
+    print("2")
 
     parts = []
     if not dp_empty and not sd_empty:
@@ -379,6 +383,11 @@ def _deduction_suffix(deduction_points, spin_deduction, notes_edit) -> str:
 
 
 def _note_for_absence(entry: dict) -> str:
+    value, points= entry.get("spin_deduction"), entry.get("deduction_points")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+    if v_empty and p_empty:
+        return ""
+    
     date = entry.get("absence", {}).get("date", "")
     base = f"غياب يوم {date}" if not _is_empty(date) else "غياب"
     suffix = _deduction_suffix(
@@ -388,6 +397,11 @@ def _note_for_absence(entry: dict) -> str:
 
 
 def _note_for_permission(entry: dict) -> str:
+    value, points= entry.get("spin_deduction"), entry.get("deduction_points")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+    if v_empty and p_empty:
+        return ""
+    
     nested = entry.get("permission", {})
     start, end = nested.get("start"), nested.get("end")
     duration = nested.get("duration_minutes")
@@ -405,6 +419,10 @@ def _note_for_permission(entry: dict) -> str:
 
 
 def _note_for_latency(entry: dict) -> str:
+    value, points= entry.get("spin_deduction"), entry.get("deduction_points")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+    if v_empty and p_empty:
+        return ""
     nested = entry.get("latency", {})
     minutes, date = nested.get("minutes"), nested.get("date")
 
@@ -421,6 +439,11 @@ def _note_for_latency(entry: dict) -> str:
 
 
 def _note_for_early_leave(entry: dict) -> str:
+    value, points= entry.get("spin_deduction"), entry.get("deduction_points")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+    if v_empty and p_empty:
+        return ""
+    
     nested = entry.get("early_leave", {})
     minutes, date = nested.get("minutes"), nested.get("date")
 
@@ -437,6 +460,11 @@ def _note_for_early_leave(entry: dict) -> str:
 
 
 def _note_for_need_review(entry: dict) -> str:
+    value, points= entry.get("spin_deduction"), entry.get("deduction_points")
+    v_empty, p_empty = _is_empty(value), _is_empty(points)
+    if v_empty and p_empty:
+        return ""
+    
     nested = entry.get("need_review", {})
     date, reason = nested.get("date"), nested.get("reason")
 
@@ -580,7 +608,7 @@ class DetailsDialog(QDialog):
         tabs = QTabWidget()
         layout.addWidget(tabs)
 
-        for cat_key, config in DEDUCTION_CATEGORIES.items():
+        for cat_key, config in DEDUCTION_CATEGORIES.items():# for ex: cat_key -> absences and config -> its value
             tab = self._build_deduction_tab(cat_key, config)
             tabs.addTab(tab, config["title"])
 
@@ -643,14 +671,29 @@ class DetailsDialog(QDialog):
         fields = config["fields"]
         nested_key = config["nested_key"]
         n_fields = len(fields)
-
         table.setRowCount(len(items))
         for row, entry in enumerate(items):
             nested = entry.get(nested_key, {}) or {}
 
             # read-only descriptive fields
             for col, field_name in enumerate(fields):
-                cell = QTableWidgetItem(_fmt(nested.get(field_name)))
+
+                field_name_mapping={
+                    "التاريخ":"date",
+                    "وقت الحضور":"checkin_time",
+                    "الدقائق":"minutes",
+                    "السبب":"reason",
+                    "وقت الانصراف":"checkout_time",
+                    "مدة الوقت":"duration_minutes",
+                    "العودة":"end",
+                    "الذهاب":"start",
+                }
+                field_name_mapped = None
+                for key, value in field_name_mapping.items():
+                    if key == field_name:
+                        field_name_mapped = value
+                        break
+                cell = QTableWidgetItem(_fmt(nested.get(field_name_mapped)))
                 cell.setFlags(cell.flags() & ~Qt.ItemIsEditable)
                 table.setItem(row, col, cell)
 
@@ -716,7 +759,7 @@ class DetailsDialog(QDialog):
     def _populate_manual_table(self, cat_key: str):
         table = self.manual_tables[cat_key]
         table.blockSignals(True)
-
+        
         items = self.emp_data.get(cat_key, [])
         table.setRowCount(len(items))
         for row, entry in enumerate(items):

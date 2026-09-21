@@ -6,10 +6,10 @@ import json
 import calendar
 
 WORK_START_HOUR = 8
-WORK_START_MINUTE = 40
+WORK_START_MINUTE = 30
 
 WORK_END_HOUR = 17
-WORK_END_MINUTE = 25
+WORK_END_MINUTE = 30
 
 WORKING_DAYS = {0,1,2,3,5,6}
 
@@ -340,7 +340,7 @@ def load_fingerprints(excel_file):
                 "datetime": parse_datetime(row.iloc[3]),              # column D
                 "action": str(row.iloc[4]).strip()    # column E
             })
-    print(records)
+    # print(records)
     return records
 
 @dataclass
