@@ -99,6 +99,8 @@ from data.globals import attendance_result_dict
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 from excel_to_pdf_per_row import generate_reports_from_gui
+with open("data/employee_mapping.json", "r") as f:
+    employee_mapping = json.load(f)
 # ---------------------------------------------------------------------------
 # Category configuration
 # ---------------------------------------------------------------------------
@@ -143,7 +145,7 @@ MANUAL_CATEGORIES = {
     "manually_deductions": "اضافة خصم",
 }
 MANUAL_COLUMNS = ["value", "points", "note"]
-MANUAL_HEADERS = ["الخصم من الاساسي", "نقاط الخصم", "ملاحظات"]
+MANUAL_HEADERS = ["القيمة من الاساسي", "نقاط الكواليتي ", "ملاحظات"]
 
 # ---------------------------------------------------------------------------
 # Working-date-range defaults / helpers
@@ -361,12 +363,8 @@ def _deduction_suffix(deduction_points, spin_deduction, notes_edit) -> str:
     absences / permissions / latencies / early_leaves / need_reviews.
     Any part that is 0 / "" / None is skipped entirely.
     """
-    print("1")
-    print(deduction_points, spin_deduction, notes_edit)
     dp_empty = _is_empty(deduction_points)
     sd_empty = _is_empty(spin_deduction)
-    print(dp_empty,sd_empty)
-    print("2")
 
     parts = []
     if not dp_empty and not sd_empty:
@@ -481,10 +479,13 @@ def _note_for_need_review(entry: dict) -> str:
 
 
 def _note_for_manual_addition(entry: dict) -> str:
-    value, note = entry.get("value"), entry.get("note")
+    print(entry)
+    value,points, note = entry.get("value"), entry.get("points"), entry.get("note")
     parts = []
     if not _is_empty(value):
         parts.append(f"اضافة {value}")
+    if not _is_empty(points):
+        parts.append(f"اضافة {points} نقطة")
     if not _is_empty(note):
         parts.append(f"السبب {note}")
     return " ".join(parts)
@@ -520,10 +521,7 @@ _NOTE_BUILDERS = {
 
 
 def build_employee_notes(emp: dict) -> str:
-    print("first")
-    print(_NOTE_BUILDERS.items())
-    print("second")
-    print(emp)
+
     key_map = {
         "absences": "الغيابات",
         "permissions": "الاذونات",
@@ -1128,9 +1126,9 @@ class FinalDialog(QDialog):
             final_salary = metrics["final"]
 
             notes = build_employee_notes(emp_data)
-
+            emp_display_name=employee_mapping[emp_name]["display_name"]
             row = [
-                emp_name,
+                emp_display_name,
                 emp_data.get("start_working_date", ""),
                 emp_data.get("end_working_date", ""),
                 main,

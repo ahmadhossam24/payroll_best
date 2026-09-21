@@ -17,6 +17,8 @@ from PySide6.QtWidgets import (
     QComboBox          # <-- added for points dropdown
 )
 import json
+with open("data/employee_mapping.json", "r") as f:
+    employee_mapping = json.load(f)
 
 class AttendanceReviewDialog(QDialog):
 
@@ -38,7 +40,7 @@ class AttendanceReviewDialog(QDialog):
                 employee_name,
                 employee_data["summary"]
             )
-
+            # emp_display_name=employee_mapping[employee_name]["display_name"]
             self.tabs.addTab(
                 employee_widget,
                 employee_name
@@ -104,7 +106,7 @@ class AttendanceReviewDialog(QDialog):
         layout = QVBoxLayout(container)
 
         layout.addWidget(
-            QLabel(f"<h2>{employee_name}</h2>")
+            QLabel(f"<h2>{employee_mapping[employee_name]["display_name"]}</h2>")
         )
 
         layout.addWidget(

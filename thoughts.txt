@@ -150,16 +150,13 @@ attendance_result_dict = {
 -------
 add date range in main page and wire it 0
 float numbers should appear as int numbers in final excel
-main salary should appear in final page
 arabify the program 0
 sync excel heads to be converted to pdf 0
 add button "transfer excel to pdf" 0
 -------
-final excel names should be display name
+final excel names should be display name 0
 remove un wanted notes from excel 0
+dates aren't show in final page details 0
 points must be choices 
 scroll can change choices in all pages
-dates aren't show in final page details 0
-salary and quality dynamic
-permissions and early leaves dont appear
 

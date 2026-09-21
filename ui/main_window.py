@@ -108,6 +108,7 @@ class MainWindow(QWidget):
         end_str = end_date.toString("yyyy-MM-dd")
         
         attendance_data = analyze_attendance(self.attendance_file,start_str, end_str)
+        print(attendance_data)
         dialog = AttendanceReviewDialog(attendance_data, self)
         if dialog.exec():
             dialog = ManualAddDedDialog(self)

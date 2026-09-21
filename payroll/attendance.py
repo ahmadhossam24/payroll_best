@@ -170,7 +170,7 @@ def analyze_day(records, date):
     # Missing checkin/checkout
     # -------------------------
 
-    if records[0]["action"] == "انصراف":
+    if records[0]["action"] == "إنصراف":
         summary.missing_checkin = True
         summary.needs_review = True
 
@@ -198,7 +198,7 @@ def analyze_day(records, date):
             if summary.first_in is None:
                 summary.first_in = record["datetime"]
 
-        elif action == "انصراف":
+        elif action == "إنصراف":
 
             summary.last_out = record["datetime"]
 
@@ -242,7 +242,7 @@ def analyze_day(records, date):
 
         # Permission
         elif (
-            current_action == "انصراف"
+            current_action == "إنصراف"
             and
             next_action == "حضور"
         ):
