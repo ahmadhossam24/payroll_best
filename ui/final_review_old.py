@@ -68,25 +68,6 @@ Notes / assumptions made while implementing this:
         checked for that employee.
       * f"zero accepts deductions: {zero_accepts_deductions}" - always,
         regardless of the checkbox state.
-
-  - New: in the Details popup, the columns under headers "نقاط الخصم"
-    (deduction_points, in every deduction-style tab: absences,
-    permissions, latencies, early_leaves, need_reviews) and
-    "نقاط الكواليتي" (points, in both manual tabs: manually_additions,
-    manually_deductions) are now QComboBox dropdown selects restricted to
-    POINTS_OPTIONS (0, 0.25, 0.50, 1..10) instead of free-text cells.
-      * When a row already has a value that isn't one of those options
-        (legacy/manually-entered data), that value is added as an extra
-        selectable entry at the top of that cell's dropdown instead of
-        being silently changed, so opening Details never mutates data on
-        its own.
-      * Selecting a different value updates emp_data[...] immediately
-        (same "live interaction" as the old itemChanged-based inputs) and
-        refreshes the summary label right away.
-      * These dropdowns are rebuilt every time the underlying table is
-        repopulated (initial build, and after add/delete of manual rows),
-        exactly like the plain QTableWidgetItem cells they replaced, so
-        row-index-based signal bindings stay correct.
 """
 
 from __future__ import annotations
@@ -99,7 +80,6 @@ from PySide6.QtCore import Qt, QDate
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QCheckBox,
-    QComboBox,
     QDateEdit,
     QDialog,
     QHBoxLayout,
@@ -114,7 +94,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QFileDialog
 )
-from PySide6.QtCore import QEvent, QObject
+
 from data.globals import attendance_result_dict
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
@@ -166,56 +146,6 @@ MANUAL_CATEGORIES = {
 }
 MANUAL_COLUMNS = ["value", "points", "note"]
 MANUAL_HEADERS = ["القيمة من الاساسي", "نقاط الكواليتي ", "ملاحظات"]
-
-# ---------------------------------------------------------------------------
-# Points / deduction-points dropdown options
-# ---------------------------------------------------------------------------
-
-# Fixed choices for any cell under "نقاط الخصم" (deduction_points) or
-# "نقاط الكواليتي" (points, in the manual tabs). Kept as display strings so
-# "0.50" renders the way the user asked for it, not "0.5".
-POINTS_OPTIONS = ["0", "0.25", "0.50", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-class WheelEventFilter(QObject):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self._wheel_enabled = False  # flip to True if you want wheel control later
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.Wheel and not self._wheel_enabled:
-            event.ignore()
-            return True  # block the event from reaching the combo
-        return super().eventFilter(obj, event)
-
-_wheel_filter = WheelEventFilter()  
-
-def _points_display(value) -> str:
-    """Map a stored points/deduction_points value onto one of POINTS_OPTIONS' display strings."""
-    number = _to_number(value)
-    for option in POINTS_OPTIONS:
-        if abs(float(option) - float(number)) < 1e-9:
-            return option
-    # Legacy/unexpected value that doesn't match any fixed option - keep it
-    # visible as-is instead of silently rounding/changing it.
-    return _fmt(value)
-
-
-def _make_points_combo(value) -> QComboBox:
-    """
-    Build a QComboBox for a points/deduction_points cell, pre-selected on
-    `value`. If `value` doesn't match one of POINTS_OPTIONS, it's inserted
-    as an extra first entry so existing data is never silently altered just
-    by opening the Details popup.
-    """
-    combo = QComboBox()
-    combo.installEventFilter(_wheel_filter)
-    display = _points_display(value)
-    options = list(POINTS_OPTIONS)
-    if display not in options:
-        options = [display] + options
-    combo.addItems(options)
-    combo.setCurrentText(display)
-    return combo
 
 # ---------------------------------------------------------------------------
 # Working-date-range defaults / helpers
@@ -654,10 +584,6 @@ class DetailsDialog(QDialog):
     absences the moment a working date is changed, this popup shows the
     filtered list automatically each time it's opened (no extra syncing
     needed, as it's opened modally).
-
-    The "نقاط الخصم" (deduction_points) and "نقاط الكواليتي" (points)
-    columns are QComboBox dropdowns limited to POINTS_OPTIONS rather than
-    free-text cells; see the module docstring for details.
     """
 
     def __init__(self, emp_name: str, emp_data: dict, range_days,parent=None):
@@ -772,18 +698,6 @@ class DetailsDialog(QDialog):
             # editable fields: deduction_points, spin_deduction, notes_edit
             for offset, key in enumerate(EDITABLE_DEDUCTION_COLUMNS):
                 col = n_fields + offset
-
-                if key == "deduction_points":
-                    # "نقاط الخصم" column: dropdown select instead of free
-                    # text, rebuilt fresh every populate call so it always
-                    # reflects whatever is currently on emp_data.
-                    combo = _make_points_combo(entry.get(key, 0))
-                    combo.currentTextChanged.connect(
-                        partial(self._on_deduction_points_combo_changed, cat_key=cat_key, row=row)
-                    )
-                    table.setCellWidget(row, col, combo)
-                    continue
-
                 value = entry.get(key, "")
                 cell = QTableWidgetItem(_fmt(value))
                 table.setItem(row, col, cell)
@@ -804,16 +718,6 @@ class DetailsDialog(QDialog):
 
         try:
             self.emp_data[cat_key][row][key] = value
-        except IndexError:
-            return
-
-        self._refresh_summary()
-
-    def _on_deduction_points_combo_changed(self, text: str, cat_key: str, row: int):
-        """Live update for the 'نقاط الخصم' (deduction_points) dropdown."""
-        value = _parse_number(text)
-        try:
-            self.emp_data[cat_key][row]["deduction_points"] = value
         except IndexError:
             return
 
@@ -858,19 +762,6 @@ class DetailsDialog(QDialog):
         table.setRowCount(len(items))
         for row, entry in enumerate(items):
             for col, key in enumerate(MANUAL_COLUMNS):
-
-                if key == "points":
-                    # "نقاط الكواليتي" column: dropdown select instead of
-                    # free text. Rebuilt every populate call (init, and
-                    # after any add/delete row), so row-index bindings
-                    # created here always match the current table state.
-                    combo = _make_points_combo(entry.get(key, 0))
-                    combo.currentTextChanged.connect(
-                        partial(self._on_manual_points_combo_changed, cat_key=cat_key, row=row)
-                    )
-                    table.setCellWidget(row, col, combo)
-                    continue
-
                 value = entry.get(key, "")
                 cell = QTableWidgetItem(_fmt(value))
                 table.setItem(row, col, cell)
@@ -886,16 +777,6 @@ class DetailsDialog(QDialog):
 
         try:
             self.emp_data[cat_key][row][key] = value
-        except IndexError:
-            return
-
-        self._refresh_summary()
-
-    def _on_manual_points_combo_changed(self, text: str, cat_key: str, row: int):
-        """Live update for the 'نقاط الكواليتي' (points) dropdown."""
-        value = _parse_number(text)
-        try:
-            self.emp_data[cat_key][row]["points"] = value
         except IndexError:
             return
 
@@ -1051,7 +932,6 @@ class FinalDialog(QDialog):
 
             # -- start / end working date pickers -----------------------
             start_edit = QDateEdit()
-            start_edit.installEventFilter(_wheel_filter)
             start_edit.setCalendarPopup(True)
             start_edit.setDisplayFormat("yyyy-MM-dd")
             start_edit.setDate(_str_to_qdate(emp_data["start_working_date"], self.start_qdate))
@@ -1059,7 +939,6 @@ class FinalDialog(QDialog):
             self.table.setCellWidget(row, self.COL_START_DATE, start_edit)
 
             end_edit = QDateEdit()
-            end_edit.installEventFilter(_wheel_filter)
             end_edit.setCalendarPopup(True)
             end_edit.setDisplayFormat("yyyy-MM-dd")
             end_edit.setDate(_str_to_qdate(emp_data["end_working_date"], self.end_qdate))

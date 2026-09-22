@@ -1,4 +1,5 @@
 from data.globals import attendance_result_dict
+from PySide6.QtCore import QEvent, QObject
 from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -18,7 +19,18 @@ from PySide6.QtWidgets import (
 )
 import json
 with open("data/employee_mapping.json", "r") as f:
-    employee_mapping = json.load(f)
+    employee_mapping = json.load(f) 
+    
+class WheelEventFilter(QObject):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._wheel_enabled = False  # flip to True if you want wheel control later
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel and not self._wheel_enabled:
+            event.ignore()
+            return True  # block the event from reaching the combo
+        return super().eventFilter(obj, event)
 
 class AttendanceReviewDialog(QDialog):
 
@@ -30,6 +42,7 @@ class AttendanceReviewDialog(QDialog):
         self.setWindowTitle("مراجعة الحضور")
         self.resize(1000, 700)
 
+        self.wheel_filter = WheelEventFilter(self)
         main_layout = QVBoxLayout(self)
 
         self.tabs = QTabWidget()
@@ -234,6 +247,7 @@ class AttendanceReviewDialog(QDialog):
     # ---------- Helper to build a points combo box ----------
     def _create_points_combo(self):
         combo = QComboBox()
+        combo.installEventFilter(self.wheel_filter) # prevent scroll
         points = ["0", "0.25", "0.50", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         combo.addItems(points)
         combo.setCurrentIndex(0)   # default "0"
@@ -252,6 +266,7 @@ class AttendanceReviewDialog(QDialog):
 
         # Spin box for deduction (labelled "spin deduction")
         spin_deduction = QSpinBox()
+        spin_deduction.installEventFilter(self.wheel_filter) # prevents wheel
         spin_deduction.setMaximum(100000)
         spin_deduction.setValue(0)      # default 0
 
@@ -291,6 +306,7 @@ class AttendanceReviewDialog(QDialog):
         points_combo = self._create_points_combo()
 
         spin_deduction = QSpinBox()
+        spin_deduction.installEventFilter(self.wheel_filter) # prevents wheel
         spin_deduction.setMaximum(100000)
         spin_deduction.setValue(0)
 
@@ -330,6 +346,7 @@ class AttendanceReviewDialog(QDialog):
         points_combo = self._create_points_combo()
 
         spin_deduction = QSpinBox()
+        spin_deduction.installEventFilter(self.wheel_filter) # prevents wheel
         spin_deduction.setMaximum(100000)
         spin_deduction.setValue(0)
 
@@ -369,6 +386,7 @@ class AttendanceReviewDialog(QDialog):
         points_combo = self._create_points_combo()
 
         spin_deduction = QSpinBox()
+        spin_deduction.installEventFilter(self.wheel_filter) # prevents wheel
         spin_deduction.setMaximum(100000)
         spin_deduction.setValue(0)
 
@@ -407,6 +425,7 @@ class AttendanceReviewDialog(QDialog):
         points_combo = self._create_points_combo()
 
         spin_deduction = QSpinBox()
+        spin_deduction.installEventFilter(self.wheel_filter) # prevents wheel
         spin_deduction.setMaximum(100000)
         spin_deduction.setValue(0)
 

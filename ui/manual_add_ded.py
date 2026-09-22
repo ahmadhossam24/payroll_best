@@ -11,9 +11,20 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
     QLabel
 )
-
+from PySide6.QtCore import QEvent, QObject
 from data.globals import attendance_result_dict
 
+class WheelEventFilter(QObject):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._wheel_enabled = False  # flip to True if you want wheel control later
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel and not self._wheel_enabled:
+            event.ignore()
+            return True  # block the event from reaching the combo
+        return super().eventFilter(obj, event)
+    
 class ManualAddDedDialog(QDialog):
 
     def __init__(self, parent=None):
@@ -24,26 +35,31 @@ class ManualAddDedDialog(QDialog):
 
         self.adjustments = []
 
+        self.wheel_filter = WheelEventFilter(self)
         layout = QVBoxLayout(self)
 
         row = QHBoxLayout()
 
         self.employee_combo = QComboBox()
+        self.employee_combo.installEventFilter(self.wheel_filter) # prevent scroll
         self.employee_combo.addItems(
             attendance_result_dict.keys()
         )
 
         self.type_combo = QComboBox()
+        self.type_combo.installEventFilter(self.wheel_filter) # prevent scroll
         self.type_combo.addItems([
             "اضف زيادة",
             "اضف خصم"
         ])
 
         self.value_spin = QSpinBox()
+        self.value_spin.installEventFilter(self.wheel_filter) # prevent scroll
         self.value_spin.setMaximum(1000000)
 
         # Points combo
         self.points_combo = QComboBox()
+        self.points_combo.installEventFilter(self.wheel_filter)
         points_values = ["0","0.25", "0.50", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         self.points_combo.addItems(points_values)
         self.points_combo.setCurrentIndex(0)   # default to "0"
