@@ -53,10 +53,10 @@ class AttendanceReviewDialog(QDialog):
                 employee_name,
                 employee_data["summary"]
             )
-            # emp_display_name=employee_mapping[employee_name]["display_name"]
+            emp_display_name=employee_mapping[employee_name]["display_name"]
             self.tabs.addTab(
                 employee_widget,
-                employee_name
+                emp_display_name
             )
 
         main_layout.addWidget(self.tabs)

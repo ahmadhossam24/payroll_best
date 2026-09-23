@@ -665,7 +665,8 @@ class DetailsDialog(QDialog):
         self.emp_name = emp_name
         self.emp_data = emp_data
 
-        self.setWindowTitle(f"Details - {emp_name}")
+        emp_display_name=employee_mapping[emp_name]["display_name"]
+        self.setWindowTitle(f"Details - {emp_display_name}")
         self.resize(900, 600)
         self.range_days=range_days
         self.deduction_tables: dict[str, QTableWidget] = {}
@@ -1031,10 +1032,10 @@ class FinalDialog(QDialog):
 
             achieved = emp_data.get("achieved", 0)
             target = emp_data.get("target", 0)
-
+            emp_display_name=employee_mapping[emp_name]["display_name"]
             # -- static text columns -----------------------------------
             static_values = {
-                self.COL_EMPLOYEE: emp_name,
+                self.COL_EMPLOYEE: emp_display_name,
                 self.COL_ACHIEVED_TARGET: f"{achieved}/{target}",
                 self.COL_TARGET_BONUS: emp_data.get("target_bonus", 0),
                 self.COL_MAIN_PLUS: metrics["main_plus"],

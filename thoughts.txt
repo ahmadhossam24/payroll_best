@@ -157,6 +157,10 @@ add button "transfer excel to pdf" 0
 final excel names should be display name 0
 remove un wanted notes from excel 0
 dates aren't show in final page details 0
-points must be choices 
-scroll can change choices in all pages
+points must be choices 0
+scroll can change choices in all pages 0
+---------
+in manual add - ded page after add manual the default of points choice returns to 0.50 make it return to 0
+the first page when no choose files should show errors 
+the last page numbers should be integers or one .1 f also in excel 
 

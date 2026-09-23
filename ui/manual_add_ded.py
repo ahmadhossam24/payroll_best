@@ -12,7 +12,12 @@ from PySide6.QtWidgets import (
     QLabel
 )
 from PySide6.QtCore import QEvent, QObject
+import json 
+
 from data.globals import attendance_result_dict
+with open("data/employee_mapping.json", "r") as f:
+    employee_mapping = json.load(f) 
+display_names= [val["display_name"] for val in employee_mapping.values()]
 
 class WheelEventFilter(QObject):
     def __init__(self, parent=None):
@@ -43,7 +48,8 @@ class ManualAddDedDialog(QDialog):
         self.employee_combo = QComboBox()
         self.employee_combo.installEventFilter(self.wheel_filter) # prevent scroll
         self.employee_combo.addItems(
-            attendance_result_dict.keys()
+            # attendance_result_dict.keys()
+            display_names
         )
 
         self.type_combo = QComboBox()
@@ -120,9 +126,10 @@ class ManualAddDedDialog(QDialog):
         )
 
     def add_adjustment(self):
-
+        fingerprint_name = next((k for k, v in employee_mapping.items() if v["display_name"] == self.employee_combo.currentText()), None)
         adjustment = {
-            "employee": self.employee_combo.currentText(),
+            # "employee": self.employee_combo.currentText(),
+            "employee": fingerprint_name,
             "type": self.type_combo.currentText(),
             "value": self.value_spin.value(),
             "points": self.points_combo.currentText(),   # store as string or float? Keep as string for display
@@ -179,10 +186,8 @@ class ManualAddDedDialog(QDialog):
             }
 
             if adjustment["type"] == "اضف زيادة":
-                print("reached")
                 employee["manually_additions"].append(item)
             else:
-                print("keached")
                 employee["manually_deductions"].append(item)
 
         self.accept()
