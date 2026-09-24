@@ -55,8 +55,8 @@ class ManualAddDedDialog(QDialog):
         self.type_combo = QComboBox()
         self.type_combo.installEventFilter(self.wheel_filter) # prevent scroll
         self.type_combo.addItems([
-            "اضف زيادة",
-            "اضف خصم"
+            "اضف خصم",
+            "اضف زيادة"
         ])
 
         self.value_spin = QSpinBox()
@@ -149,7 +149,7 @@ class ManualAddDedDialog(QDialog):
         self.list_widget.addItem(text)
 
         self.value_spin.setValue(0)
-        self.points_combo.setCurrentIndex(2)   # reset to "1"
+        self.points_combo.setCurrentIndex(0)   # reset to "1"
         self.note_edit.clear()
 
     def delete_selected(self):

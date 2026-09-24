@@ -102,6 +102,9 @@ class MainWindow(QWidget):
         if not (start_date.isValid() and end_date.isValid()) or start_date > end_date:
             QMessageBox.warning(self, "لم يتم ادخال تواريخ", "اختر التواريخ")
             return
+        if not (self.attendance_file and self.target_file):
+            QMessageBox.warning(self, "لم يتم تحديد الملفات ", "اختر الملفات")
+            return
 
         # convert to strings in the requested format
         start_str = start_date.toString("yyyy-MM-dd")

@@ -92,6 +92,7 @@ Notes / assumptions made while implementing this:
 from __future__ import annotations
 
 import json
+import math
 from datetime import date, datetime
 from functools import partial
 
@@ -393,7 +394,7 @@ def compute_employee_metrics(emp: dict,passed_range_days) -> dict:
     # quality_base replaces the old flat "1000": both the base quality you'd
     # get with zero net deduction points, and the cap on quality, now scale
     # with the employee's working-date range.
-    quality_base = (range_work_days / passed_range_days) * 1000
+    quality_base = math.ceil((range_work_days / passed_range_days) * 1000)
     quality = quality_base - ((points_minus - points_plus) * 100)
 
     if quality > quality_base:
@@ -403,7 +404,7 @@ def compute_employee_metrics(emp: dict,passed_range_days) -> dict:
     if quality_cancelled:
         quality = 0
 
-    fixed_salary = (range_work_days / passed_range_days) * 3000
+    fixed_salary = math.ceil((range_work_days / passed_range_days) * 3000)
     target_bonus = emp.get("target_bonus", 0) or 0
 
     final = fixed_salary + target_bonus + quality + main_plus - main_minus
